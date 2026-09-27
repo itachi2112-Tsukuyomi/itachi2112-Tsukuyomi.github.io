@@ -555,7 +555,28 @@
     function(u){ return 'https://api.allorigins.win/raw?url='+encodeURIComponent(u); },
     function(u){ return 'https://api.codetabs.com/v1/proxy/?quest='+encodeURIComponent(u); }
   ];
-  function viaProxy(url){ return any(PROXIES.map(function(p){ return getJSON(p(url), null, 15000); })); }
+  // These wrap the upstream body as a JSON string in `contents`.
+  var WRAP_PROXIES = [
+    function(u){ return 'https://api.allorigins.win/get?url='+encodeURIComponent(u); },
+    function(u){ return 'https://whateverorigin.org/get?url='+encodeURIComponent(u); }
+  ];
+  var EXTRA_PROXIES = [
+    function(u){ return 'https://api.cors.lol/?url='+encodeURIComponent(u); },
+    function(u){ return 'https://thingproxy.freeboard.io/fetch/'+u; }
+  ];
+  function viaProxy(url, wide){
+    var ps = PROXIES.map(function(p){ return getJSON(p(url), null, 15000); });
+    if(wide){
+      ps = ps.concat(EXTRA_PROXIES.map(function(p){ return getJSON(p(url), null, 15000); }));
+      ps = ps.concat(WRAP_PROXIES.map(function(p){
+        return getJSON(p(url), null, 15000).then(function(w){
+          if(!w || typeof w.contents !== 'string') throw new Error('bad payload');
+          return JSON.parse(w.contents);
+        });
+      }));
+    }
+    return any(ps);
+  }
   // Only corsproxy.io forwards POST bodies.
   function postViaProxy(url, body){
     return getJSON(PROXIES[0](url), { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) }, 15000);
@@ -619,7 +640,7 @@
     ],
     hackerrank: [
       { host:'hackerrank.com/rest (via proxy)', get:function(u){
-        return viaProxy('https://www.hackerrank.com/rest/hackers/'+encodeURIComponent(u)+'/badges').then(function(j){
+        return viaProxy('https://www.hackerrank.com/rest/hackers/'+encodeURIComponent(u)+'/badges', true).then(function(j){
           if(!j || !Array.isArray(j.models)) throw new Error('bad payload');
           var b = j.models.filter(function(x){ return x.stars>0 || x.solved>0; })
             .map(function(x){ return { name:x.badge_name, stars:x.stars||0, solved:x.solved||0 }; })
@@ -788,7 +809,7 @@
       synced = true; renderAll();
       log('DONE','c-prompt', ok+'/'+ORDER.length+' platforms updated live');
       metaEl.innerHTML = ok===ORDER.length ? 'all platforms <b>live</b> · '+esc(new Date().toLocaleTimeString('en-IN'))
-        : ok ? '<b>'+ok+'/'+ORDER.length+'</b> live · the rest show cached numbers'
+        : ok ? '<b>'+ok+'/'+ORDER.length+'</b> live'+(ORDER.some(function(k){ return state[k].status==='cached'; }) ? ' · the rest show cached numbers' : '')
         : 'live APIs unreachable · showing cached numbers';
     }).finally(function(){
       busy = false;
