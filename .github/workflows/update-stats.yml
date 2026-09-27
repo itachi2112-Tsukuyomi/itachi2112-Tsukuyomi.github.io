@@ -2,7 +2,7 @@ name: Update coding stats
 
 on:
   schedule:
-    - cron: '23 * * * *' # hourly
+    - cron: '23,53 * * * *' # every 30 min (GitHub may delay or skip scheduled runs)
   workflow_dispatch:
 
 permissions:
