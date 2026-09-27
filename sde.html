@@ -660,19 +660,29 @@
     function(u){ return 'https://api.cors.lol/?url='+encodeURIComponent(u); },
     function(u){ return 'https://thingproxy.freeboard.io/fetch/'+u; }
   ];
-  function viaProxy(url, wide){
-    var ps = PROXIES.map(function(p){ return getJSON(p(url), null, 15000); });
+  function getText(url, ms){
+    var ctl = ('AbortController' in window) ? new AbortController() : null;
+    var t = ctl ? setTimeout(function(){ ctl.abort(); }, ms||15000) : null;
+    return fetch(url, ctl ? { cache:'no-store', signal:ctl.signal } : { cache:'no-store' }).then(function(r){
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      return r.text();
+    }).finally(function(){ if(t) clearTimeout(t); });
+  }
+  // Races the proxies and resolves with the upstream body as text.
+  function proxyText(url, wide){
+    var raw = wide ? PROXIES.concat(EXTRA_PROXIES) : PROXIES;
+    var ps = raw.map(function(p){ return getText(p(url), 20000); });
     if(wide){
-      ps = ps.concat(EXTRA_PROXIES.map(function(p){ return getJSON(p(url), null, 15000); }));
       ps = ps.concat(WRAP_PROXIES.map(function(p){
-        return getJSON(p(url), null, 15000).then(function(w){
+        return getJSON(p(url), null, 20000).then(function(w){
           if(!w || typeof w.contents !== 'string') throw new Error('bad payload');
-          return JSON.parse(w.contents);
+          return w.contents;
         });
       }));
     }
     return any(ps);
   }
+  function viaProxy(url, wide){ return proxyText(url, wide).then(function(t){ return JSON.parse(t); }); }
   // Only corsproxy.io forwards POST bodies.
   function postViaProxy(url, body){
     return getJSON(PROXIES[0](url), { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) }, 15000);
@@ -696,15 +706,63 @@
   }
   var LC_QUERY = 'query($u:String!){ matchedUser(username:$u){ profile{ ranking } submitStatsGlobal{ acSubmissionNum{ difficulty count } } } userContestRanking(username:$u){ rating attendedContestsCount topPercentage } }';
 
+  // Depth-first search for the first numeric value whose key matches one of the patterns (in priority order).
+  function deepNum(o, pats){
+    for(var p=0;p<pats.length;p++){
+      var stack=[o], seen=0;
+      while(stack.length && seen++ < 5000){
+        var cur = stack.pop();
+        if(!cur || typeof cur !== 'object') continue;
+        for(var k in cur){
+          var v = cur[k];
+          if(v && typeof v === 'object') stack.push(v);
+          else if(pats[p].test(k) && num(v) !== null) return num(v);
+        }
+      }
+    }
+    return null;
+  }
+  // Difficulty counts may be numbers, {count:n}, arrays or objects keyed by problem.
+  function deepCount(o, name){
+    var re = new RegExp('^'+name+'$','i'), stack=[o], seen=0;
+    while(stack.length && seen++ < 5000){
+      var cur = stack.pop();
+      if(!cur || typeof cur !== 'object') continue;
+      for(var k in cur){
+        var v = cur[k];
+        if(re.test(k)){
+          if(num(v) !== null) return num(v);
+          if(Array.isArray(v)) return v.length;
+          if(v && typeof v === 'object') return num(v.count) !== null ? num(v.count) : num(v.total) !== null ? num(v.total) : Object.keys(v).length;
+        }
+        if(v && typeof v === 'object') stack.push(v);
+      }
+    }
+    return null;
+  }
+
+  // Normalises the many shapes GeeksforGeeks stat APIs return.
   function gfgNorm(j){
     if(!j || typeof j !== 'object') throw new Error('bad payload');
-    var i = j.info || j.data || j;
-    var s = j.solvedStats || {}, c = function(k, K){ return s[k] ? num(s[k].count) : first(j[K]); };
-    var solved = first(i.totalProblemsSolved, i.total_problems_solved);
-    if(solved === null) throw new Error(j.error || j.message || 'bad payload');
-    return { solved:solved, codingScore:first(i.codingScore, i.score), instituteRank:first(i.instituteRank, i.institute_rank),
-             streak:first(i.maxStreak, i.pod_solved_longest_streak, i.currentStreak),
-             school:c('school','School'), basic:c('basic','Basic'), easy:c('easy','Easy'), medium:c('medium','Medium'), hard:c('hard','Hard') };
+    var d = { school:deepCount(j,'school'), basic:deepCount(j,'basic'), easy:deepCount(j,'easy'), medium:deepCount(j,'medium'), hard:deepCount(j,'hard') };
+    var solved = deepNum(j, [/^total_?problems_?solved$/i, /^total_?solved$/i, /^problems_?solved$/i, /^(?!.*(streak|pod|potd)).*solved/i]);
+    if(solved === null){
+      var sum = ['school','basic','easy','medium','hard'].reduce(function(s,k){ return s + (d[k]||0); }, 0);
+      if(sum > 0) solved = sum;
+    }
+    if(solved === null) throw new Error('unrecognised response');
+    d.solved = solved;
+    d.codingScore = deepNum(j, [/^coding_?score$/i, /^score$/i]);
+    d.instituteRank = deepNum(j, [/^institute_?rank$/i]);
+    d.streak = deepNum(j, [/^max_?streak$/i, /longest_?streak/i, /^current_?streak$/i, /streak/i]);
+    return d;
+  }
+  // Last resort: read the numbers straight out of the public profile page's embedded data.
+  function gfgFromHtml(html){
+    function grab(key){ var m = html.match(new RegExp(key+'\\\\?"?\\s*:\\s*"?(\\d+)')); return m ? Number(m[1]) : null; }
+    var solved = grab('total_problems_solved');
+    if(solved === null) throw new Error('stats not found in page');
+    return { solved:solved, instituteRank:grab('institute_rank'), streak:grab('pod_solved_longest_streak') };
   }
 
   // ---------- sources (all raced in parallel; first valid payload wins) ----------
@@ -725,7 +783,10 @@
     ],
     gfg: [
       { host:'authapi.geeksforgeeks.org (via proxy)', get:function(u){
-        return viaProxy('https://authapi.geeksforgeeks.org/api-get/user-profile-info/?handle='+encodeURIComponent(u)+'&article_count=false&redirect=true').then(gfgNorm);
+        return viaProxy('https://authapi.geeksforgeeks.org/api-get/user-profile-info/?handle='+encodeURIComponent(u)+'&article_count=false&redirect=true', true).then(gfgNorm);
+      }},
+      { host:'geeksforgeeks.org profile page (via proxy)', get:function(u){
+        return proxyText('https://www.geeksforgeeks.org/profile/'+encodeURIComponent(u), true).then(gfgFromHtml);
       }},
       { host:'gfg-stats.tashif.codes', get:function(u){
         return getJSON('https://gfg-stats.tashif.codes/'+encodeURIComponent(u), null, 20000).then(gfgNorm);
