@@ -1,4 +1,62 @@
 {
-  "updatedAt": null,
-  "platforms": {}
+  "updatedAt": "2026-09-27T07:00:22.578Z",
+  "platforms": {
+    "leetcode": {
+      "handle": "itachi_uchiha_2112",
+      "solved": 222,
+      "easy": 131,
+      "medium": 91,
+      "hard": 0,
+      "ranking": 761210,
+      "contestRating": null,
+      "contests": null,
+      "topPercentage": null,
+      "source": "leetcode.com/graphql",
+      "fetchedAt": "2026-09-27T07:00:22.578Z"
+    },
+    "gfg": {
+      "handle": "chandakhq33g",
+      "solved": 10,
+      "codingScore": 20,
+      "instituteRank": 976,
+      "streak": 0,
+      "source": "authapi.geeksforgeeks.org",
+      "school": 0,
+      "basic": 4,
+      "easy": 4,
+      "medium": 2,
+      "hard": 0,
+      "fetchedAt": "2026-09-27T07:00:22.578Z"
+    },
+    "hackerrank": {
+      "handle": "chandakhitesh77",
+      "solved": 17,
+      "badgeCount": 2,
+      "stars": 4,
+      "badges": [
+        {
+          "name": "Python",
+          "stars": 3,
+          "solved": 11
+        },
+        {
+          "name": "Problem Solving",
+          "stars": 1,
+          "solved": 3
+        },
+        {
+          "name": "Java",
+          "stars": 0,
+          "solved": 2
+        },
+        {
+          "name": "C",
+          "stars": 0,
+          "solved": 1
+        }
+      ],
+      "source": "hackerrank.com/rest",
+      "fetchedAt": "2026-09-27T07:00:22.578Z"
+    }
+  }
 }
