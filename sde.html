@@ -540,59 +540,81 @@
     }).finally(function(){ if(t) clearTimeout(t); });
   }
 
-  // Some platforms don't send CORS headers; try public CORS proxies in turn.
+  // Resolves with the first promise that succeeds; rejects only if all fail.
+  function any(ps){
+    return new Promise(function(res, rej){
+      var n = ps.length, f = 0, last;
+      if(!n) return rej(new Error('no sources'));
+      ps.forEach(function(p){ p.then(res, function(e){ last = e; if(++f === n) rej(last); }); });
+    });
+  }
+
+  // Some platforms don't send CORS headers; race a few public CORS proxies.
   var PROXIES = [
     function(u){ return 'https://corsproxy.io/?url='+encodeURIComponent(u); },
     function(u){ return 'https://api.allorigins.win/raw?url='+encodeURIComponent(u); },
     function(u){ return 'https://api.codetabs.com/v1/proxy/?quest='+encodeURIComponent(u); }
   ];
-  function viaProxy(url){
-    var i = 0;
-    function next(err){
-      if(i >= PROXIES.length) return Promise.reject(err || new Error('all proxies failed'));
-      var p = PROXIES[i++];
-      return getJSON(p(url)).catch(next);
-    }
-    return next();
+  function viaProxy(url){ return any(PROXIES.map(function(p){ return getJSON(p(url), null, 15000); })); }
+  // Only corsproxy.io forwards POST bodies.
+  function postViaProxy(url, body){
+    return getJSON(PROXIES[0](url), { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) }, 15000);
   }
 
-  // ---------- sources (tried in order; first valid payload wins) ----------
+  function first(){ for(var i=0;i<arguments.length;i++){ var v = num(arguments[i]); if(v !== null) return v; } return null; }
+
+  // Normalises the many shapes LeetCode stat APIs return.
+  function lcNorm(j){
+    if(!j || typeof j !== 'object') throw new Error('bad payload');
+    if(j.data && 'matchedUser' in j.data){
+      var m = j.data.matchedUser; if(!m) throw new Error('user not found');
+      var by = {}; (m.submitStatsGlobal || m.submitStats).acSubmissionNum.forEach(function(x){ by[x.difficulty] = x.count; });
+      var c = j.data.userContestRanking;
+      return { solved:by.All, easy:by.Easy, medium:by.Medium, hard:by.Hard, ranking:num(m.profile && m.profile.ranking),
+               contestRating:c ? Math.round(c.rating) : null, contests:c ? c.attendedContestsCount : null, topPercentage:c ? num(c.topPercentage) : null };
+    }
+    var solved = first(j.totalSolved, j.solvedProblem, j.total_solved);
+    if(solved === null) throw new Error(j.errors || j.error || j.message ? 'user not found / rate limited' : 'bad payload');
+    return { solved:solved, easy:first(j.easySolved), medium:first(j.mediumSolved), hard:first(j.hardSolved), ranking:first(j.ranking) };
+  }
+  var LC_QUERY = 'query($u:String!){ matchedUser(username:$u){ profile{ ranking } submitStatsGlobal{ acSubmissionNum{ difficulty count } } } userContestRanking(username:$u){ rating attendedContestsCount topPercentage } }';
+
+  function gfgNorm(j){
+    if(!j || typeof j !== 'object') throw new Error('bad payload');
+    var i = j.info || j.data || j;
+    var s = j.solvedStats || {}, c = function(k, K){ return s[k] ? num(s[k].count) : first(j[K]); };
+    var solved = first(i.totalProblemsSolved, i.total_problems_solved);
+    if(solved === null) throw new Error(j.error || j.message || 'bad payload');
+    return { solved:solved, codingScore:first(i.codingScore, i.score), instituteRank:first(i.instituteRank, i.institute_rank),
+             streak:first(i.maxStreak, i.pod_solved_longest_streak, i.currentStreak),
+             school:c('school','School'), basic:c('basic','Basic'), easy:c('easy','Easy'), medium:c('medium','Medium'), hard:c('hard','Hard') };
+  }
+
+  // ---------- sources (all raced in parallel; first valid payload wins) ----------
   var SOURCES = {
     leetcode: [
-      { host:'leetcode-api-faisalshohag.vercel.app', get:function(u){
-        return getJSON('https://leetcode-api-faisalshohag.vercel.app/'+encodeURIComponent(u)).then(function(j){
-          if(typeof j.totalSolved !== 'number') throw new Error(j.errors ? 'user not found' : 'bad payload');
-          return { solved:j.totalSolved, easy:j.easySolved, medium:j.mediumSolved, hard:j.hardSolved, ranking:num(j.ranking) };
-        });
+      { host:'leetcode.com/graphql (via proxy)', get:function(u){
+        return postViaProxy('https://leetcode.com/graphql', { query:LC_QUERY, variables:{ u:u } }).then(lcNorm);
       }},
       { host:'alfa-leetcode-api.onrender.com', get:function(u){
-        return getJSON('https://alfa-leetcode-api.onrender.com/'+encodeURIComponent(u)+'/solved', null, 20000).then(function(j){
-          if(typeof j.solvedProblem !== 'number') throw new Error('bad payload');
-          return { solved:j.solvedProblem, easy:j.easySolved, medium:j.mediumSolved, hard:j.hardSolved };
-        });
+        return getJSON('https://alfa-leetcode-api.onrender.com/userProfile/'+encodeURIComponent(u), null, 25000).then(lcNorm);
       }},
-      { host:'leetcode-stats-api.herokuapp.com', get:function(u){
-        return getJSON('https://leetcode-stats-api.herokuapp.com/'+encodeURIComponent(u)).then(function(j){
-          if(j.status !== 'success') throw new Error(j.message || 'bad payload');
-          return { solved:j.totalSolved, easy:j.easySolved, medium:j.mediumSolved, hard:j.hardSolved, ranking:num(j.ranking) };
-        });
+      { host:'leetcode-api-faisalshohag.vercel.app', get:function(u){
+        return getJSON('https://leetcode-api-faisalshohag.vercel.app/'+encodeURIComponent(u), null, 25000).then(lcNorm);
+      }},
+      { host:'leetcode-stats.tashif.codes', get:function(u){
+        return getJSON('https://leetcode-stats.tashif.codes/'+encodeURIComponent(u), null, 20000).then(lcNorm);
       }}
     ],
     gfg: [
-      { host:'geeks-for-geeks-api.vercel.app', get:function(u){
-        return getJSON('https://geeks-for-geeks-api.vercel.app/'+encodeURIComponent(u)).then(function(j){
-          var i = j && j.info; if(!i) throw new Error((j && j.error) || 'bad payload');
-          var s = j.solvedStats || {}, c = function(k){ return s[k] ? num(s[k].count) : null; };
-          return { solved:num(i.totalProblemsSolved), codingScore:num(i.codingScore), instituteRank:num(i.instituteRank),
-                   streak:num(i.maxStreak!=null ? i.maxStreak : i.currentStreak),
-                   school:c('school'), basic:c('basic'), easy:c('easy'), medium:c('medium'), hard:c('hard') };
-        });
-      }},
       { host:'authapi.geeksforgeeks.org (via proxy)', get:function(u){
-        return viaProxy('https://authapi.geeksforgeeks.org/api-get/user-profile-info/?handle='+encodeURIComponent(u)+'&article_count=false&redirect=true').then(function(j){
-          var d = j && j.data; if(!d || d.total_problems_solved === undefined) throw new Error('bad payload');
-          return { solved:num(d.total_problems_solved), codingScore:num(d.score), instituteRank:num(d.institute_rank), streak:num(d.pod_solved_longest_streak) };
-        });
+        return viaProxy('https://authapi.geeksforgeeks.org/api-get/user-profile-info/?handle='+encodeURIComponent(u)+'&article_count=false&redirect=true').then(gfgNorm);
+      }},
+      { host:'gfg-stats.tashif.codes', get:function(u){
+        return getJSON('https://gfg-stats.tashif.codes/'+encodeURIComponent(u), null, 20000).then(gfgNorm);
+      }},
+      { host:'geeks-for-geeks-api.vercel.app', get:function(u){
+        return getJSON('https://geeks-for-geeks-api.vercel.app/'+encodeURIComponent(u), null, 20000).then(gfgNorm);
       }}
     ],
     hackerrank: [
@@ -609,6 +631,17 @@
       }}
     ]
   };
+
+  // GFG difficulty split lives on a separate endpoint; best-effort after the totals arrive.
+  function gfgDifficulty(u){
+    return postViaProxy('https://practiceapi.geeksforgeeks.org/api/v1/user/problems/submissions/', { handle:u, requestType:'', year:'', month:'' })
+      .then(function(p){
+        var r = (p && p.result) || {}, cnt = function(k){ return r[k] ? Object.keys(r[k]).length : 0; };
+        var d = { school:cnt('School'), basic:cnt('Basic'), easy:cnt('Easy'), medium:cnt('Medium'), hard:cnt('Hard') };
+        if(!(d.school+d.basic+d.easy+d.medium+d.hard)) throw new Error('empty');
+        return d;
+      });
+  }
 
   // ---------- rendering ----------
   var cardsEl = document.getElementById('cards');
@@ -708,32 +741,39 @@
   var busy = false, synced = false;
 
   function syncOne(key){
-    var list = SOURCES[key], u = PROFILES[key], i = 0;
+    var list = SOURCES[key], u = PROFILES[key], done = false, t0 = performance.now();
     if(!u) return Promise.resolve(false);
-    function attempt(){
-      if(i >= list.length){
-        log('FAIL','c-alert', META[key].name+': every source failed'+(state[key].data?' — keeping cached numbers':''));
-        return false;
-      }
-      var s = list[i++], t0 = performance.now();
+    var tries = list.map(function(s){
       return s.get(u).then(function(d){
         if(d.solved === null || d.solved === undefined) throw new Error('empty payload');
-        var prev = state[key].data;
-        // keep extra fields (e.g. contest rating from the Action) the live source doesn't return
-        if(prev) Object.keys(prev).forEach(function(f){ if(d[f]===undefined && f!=='source' && f!=='fetchedAt') d[f]=prev[f]; });
-        d.handle = u;
+        return { d:d, s:s };
+      }).catch(function(e){
+        if(!done) log('MISS','c-amber', META[key].name+' ✕ '+s.host+': '+(e.name==='AbortError'?'timeout':e.message));
+        throw e;
+      });
+    });
+    return any(tries).then(function(r){
+      done = true;
+      var d = r.d, prev = state[key].data;
+      // keep extra fields (e.g. contest rating from the Action) the live source doesn't return
+      if(prev && prev.handle === u) Object.keys(prev).forEach(function(f){ if((d[f]===undefined || d[f]===null) && f!=='source' && f!=='fetchedAt') d[f]=prev[f]; });
+      d.handle = u;
+      function save(){
         var at = new Date().toISOString();
         state[key] = { data:d, status:'live', at:at };
         var local = lsGet() || {}; local[key] = { handle:u, data:d, at:at }; lsSet(local);
-        log(' OK ','c-ok', META[key].name+' ← '+s.host+' ('+Math.round(performance.now()-t0)+' ms)');
         renderAll();
-        return true;
-      }).catch(function(e){
-        log('MISS','c-amber', META[key].name+' ✕ '+s.host+': '+(e.name==='AbortError'?'timeout':e.message));
-        return attempt();
-      });
-    }
-    return attempt();
+      }
+      save();
+      log(' OK ','c-ok', META[key].name+' ← '+r.s.host+' ('+Math.round(performance.now()-t0)+' ms)');
+      if(key === 'gfg' && d.easy == null){
+        return gfgDifficulty(u).then(function(x){ Object.assign(d, x); save(); }, function(){}).then(function(){ return true; });
+      }
+      return true;
+    }, function(){
+      log('FAIL','c-alert', META[key].name+': every source failed'+(state[key].data?' — keeping cached numbers':''));
+      return false;
+    });
   }
 
   function update(){
