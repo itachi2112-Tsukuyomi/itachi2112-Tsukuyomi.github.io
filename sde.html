@@ -199,6 +199,7 @@
     background:var(--surface-2);color:var(--muted);
   }
   .badge.live{background:color-mix(in srgb, var(--ok) 14%, transparent);color:var(--ok)}
+  .badge.synced{background:color-mix(in srgb, var(--ok) 10%, transparent);color:var(--ok)}
   .badge.cached{background:color-mix(in srgb, var(--warn) 16%, transparent);color:var(--warn)}
   .badge.none{background:color-mix(in srgb, var(--bad) 12%, transparent);color:var(--bad)}
   .pcard .handle{font-size:13.5px;color:var(--muted);text-decoration:none;margin-top:2px;width:fit-content}
@@ -829,7 +830,8 @@
   function statusBadge(st){
     if(!st || st.status==='none') return '<span class="badge none">No data</span>';
     if(st.status==='live') return '<span class="badge live">● Live</span>';
-    return '<span class="badge cached" title="Saved snapshot">Saved · '+esc(when(st.at))+'</span>';
+    if(st.status==='synced' && isFresh(st.at)) return '<span class="badge synced" title="Checked automatically every hour by GitHub Actions">✓ Synced · '+esc(when(st.at))+'</span>';
+    return '<span class="badge cached" title="Last saved numbers">Saved · '+esc(when(st.at))+'</span>';
   }
 
   function diffBar(d, keys){
@@ -902,8 +904,23 @@
     logEl.scrollTop = logEl.scrollHeight;
   }
 
-  // ---------- load cache: GitHub-Action snapshot + this browser's last live result ----------
-  function applyCache(snap){
+  // ---------- server sync: GitHub Action runs hourly and commits data/stats.json ----------
+  // Read it straight from the repo (CORS-enabled, no Pages rebuild delay), falling back to the deployed copy.
+  var REPO = 'itachi2112-Tsukuyomi/itachi2112-Tsukuyomi.github.io';
+  var FRESH_MS = 3 * 3600 * 1000;
+  function isFresh(iso){ return iso && (Date.now() - new Date(iso).getTime()) < FRESH_MS; }
+  function loadSnapshot(){
+    return getJSON('https://raw.githubusercontent.com/'+REPO+'/main/data/stats.json?t='+Date.now(), null, 8000)
+      .catch(function(){ return getJSON('data/stats.json', null, 6000); })
+      .catch(function(){ return null; });
+  }
+  // When the Action last succeeded; numbers only get committed when they change, so this is the "checked at" time.
+  function lastServerCheck(){
+    return getJSON('https://api.github.com/repos/'+REPO+'/actions/workflows/update-stats.yml/runs?per_page=1&status=success', null, 6000)
+      .then(function(j){ var r = j && j.workflow_runs && j.workflow_runs[0]; return r ? (r.run_started_at || r.updated_at) : null; })
+      .catch(function(){ return null; });
+  }
+  function applyCache(snap, checkedAt){
     var local = lsGet() || {};
     ORDER.forEach(function(k){
       var a = snap && snap.platforms && snap.platforms[k];
@@ -911,10 +928,14 @@
       // ignore cached data for a different handle
       if(a && a.handle && a.handle !== PROFILES[k]) a = null;
       if(b && b.handle !== PROFILES[k]) b = null;
-      var pick = a && b ? (new Date(a.fetchedAt) > new Date(b.at) ? {data:a, at:a.fetchedAt} : {data:b.data, at:b.at})
-               : a ? {data:a, at:a.fetchedAt} : b ? {data:b.data, at:b.at} : null;
-      state[k] = pick ? { data:pick.data, status:'cached', at:pick.at } : { data:null, status:'none' };
+      var aAt = a ? (checkedAt && new Date(checkedAt) > new Date(a.fetchedAt) ? checkedAt : a.fetchedAt) : null;
+      if(a && (!b || new Date(aAt) >= new Date(b.at))) state[k] = { data:a, status:'synced', at:aAt };
+      else if(b) state[k] = { data:b.data, status:'cached', at:b.at };
+      else state[k] = { data:null, status:'none' };
     });
+  }
+  function refreshFromServer(){
+    return Promise.all([loadSnapshot(), lastServerCheck()]).then(function(r){ applyCache(r[0], r[1]); renderAll(); });
   }
 
   // ---------- update (live) ----------
@@ -952,7 +973,12 @@
       }
       return true;
     }, function(){
-      log('FAIL','c-alert', META[key].name+': every source failed'+(state[key].data?' — keeping cached numbers':''));
+      var st = state[key];
+      if(st.status === 'synced' && isFresh(st.at)){
+        log('INFO','c-prompt', META[key].name+': live sources busy — using the hourly server sync from '+when(st.at));
+        return 'synced';
+      }
+      log('FAIL','c-alert', META[key].name+': every source failed'+(st.data?' — keeping saved numbers':''));
       return false;
     });
   }
@@ -964,13 +990,19 @@
     metaEl.textContent = 'Fetching live stats…';
     logEl.innerHTML = '';
     log('INFO','c-prompt','Sync started '+new Date().toLocaleTimeString('en-IN'));
-    Promise.all(ORDER.map(syncOne)).then(function(res){
-      var ok = res.filter(Boolean).length;
+    refreshFromServer().then(function(){
+      log('INFO','c-prompt','Loaded the latest hourly server sync');
+      return Promise.all(ORDER.map(syncOne));
+    }).then(function(res){
+      var live = res.filter(function(r){ return r === true; }).length;
+      var fromServer = res.filter(function(r){ return r === 'synced'; }).length;
       synced = true; renderAll();
-      log('DONE','c-prompt', ok+' of '+ORDER.length+' platforms updated live');
-      metaEl.innerHTML = ok===ORDER.length ? 'All platforms <b>live</b> · '+esc(new Date().toLocaleTimeString('en-IN'))
-        : ok ? '<b>'+ok+'/'+ORDER.length+'</b> live'+(ORDER.some(function(k){ return state[k].status==='cached'; }) ? ' · the rest show saved numbers' : '')
-        : 'Couldn\u2019t reach the live APIs · showing saved numbers';
+      log('DONE','c-prompt', live+' live, '+fromServer+' from server sync, '+(ORDER.length-live-fromServer)+' unavailable');
+      var t = esc(new Date().toLocaleTimeString('en-IN'));
+      metaEl.innerHTML = live === ORDER.length ? 'All platforms <b>live</b> · '+t
+        : live + fromServer === ORDER.length ? 'All platforms <b>up to date</b> · '+t
+        : live + fromServer ? '<b>'+(live+fromServer)+'/'+ORDER.length+'</b> up to date · the rest show saved numbers'
+        : 'Couldn\u2019t refresh right now · showing saved numbers';
     }).finally(function(){
       busy = false;
       btn.disabled = false; btn.classList.remove('busy'); btn.querySelector('.txt').textContent = 'Refresh stats';
@@ -1005,13 +1037,11 @@
   ORDER.forEach(function(k){ state[k] = { data:null, status:'none' }; });
   renderAll();
   getJSON('data/profiles.json', null, 6000).then(function(p){ ORDER.forEach(function(k){ if(p && p[k]) PROFILES[k] = p[k]; }); }).catch(function(){})
-    .then(function(){ return getJSON('data/stats.json', null, 6000).catch(function(){ return null; }); })
-    .then(function(snap){
-      applyCache(snap);
-      renderAll();
+    .then(refreshFromServer)
+    .then(function(){
       var have = ORDER.filter(function(k){ return state[k].data; }).length;
       if(have === 0){ update(); }  // nothing saved yet: fetch live straight away
-      else metaEl.innerHTML = 'Showing saved stats · refresh for live numbers';
+      else metaEl.innerHTML = 'Synced hourly · refresh for live numbers';
     });
 
   // scroll reveals
