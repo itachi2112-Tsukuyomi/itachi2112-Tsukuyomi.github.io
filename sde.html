@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hitesh Chandak — Software Developer</title>
+<meta name="description" content="Hitesh Chandak — computer engineering undergraduate and software developer. Projects, skills and live LeetCode, GeeksforGeeks and HackerRank stats.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#080B10;
+    --panel:#0E131B;
+    --panel-2:#121926;
+    --line:#1B2432;
+    --text:#C9D4E2;
+    --dim:#8494A8;
+    --muted:#5B6B80;
+    --accent:#4CC2FF;
+    --ok:#7CE38B;
+    --alert:#FF6B5B;
+    --amber:#F2C14E;
+    --easy:#3DD6B5;
+    --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    --sans:'IBM Plex Sans',system-ui,-apple-system,sans-serif;
+    --wrap:1080px;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    font-size:16px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+    background-image:
+      radial-gradient(900px 500px at 15% -10%, rgba(76,194,255,.07), transparent 70%),
+      radial-gradient(700px 400px at 95% 5%, rgba(124,227,139,.05), transparent 70%);
+    background-attachment:fixed;
+  }
+  a{color:inherit}
+  ::selection{background:rgba(76,194,255,.28)}
+
+  .wrap{width:100%;max-width:var(--wrap);margin:0 auto;padding:0 24px}
+
+  /* ---------- status bar ---------- */
+  .statusbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(8,11,16,.82);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+    font-family:var(--mono);
+    font-size:12px;
+  }
+  .statusbar .wrap{display:flex;align-items:center;gap:18px;height:46px}
+  .host{color:var(--ok);white-space:nowrap;font-weight:500}
+  .host .at{color:var(--muted)}
+  .pulse{
+    display:inline-block;width:7px;height:7px;border-radius:50%;
+    background:var(--ok);margin-right:8px;vertical-align:1px;
+    animation:pulse 2.4s ease-out infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(124,227,139,.5)}
+    70%{box-shadow:0 0 0 7px rgba(124,227,139,0)}
+    100%{box-shadow:0 0 0 0 rgba(124,227,139,0)}
+  }
+  nav{margin-left:auto;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+  nav::-webkit-scrollbar{display:none}
+  nav a{
+    color:var(--muted);text-decoration:none;padding:5px 9px;border-radius:4px;
+    white-space:nowrap;transition:color .15s,background .15s;
+  }
+  nav a:hover,nav a:focus-visible{color:var(--accent);background:rgba(76,194,255,.09)}
+  nav a.alt{color:var(--dim);border:1px solid var(--line)}
+
+  /* ---------- hero ---------- */
+  header{padding:74px 0 30px}
+  .eyebrow{
+    font-family:var(--mono);font-size:12px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:20px;
+  }
+  .eyebrow b{color:var(--accent);font-weight:500}
+  h1{
+    font-family:var(--mono);font-weight:800;
+    font-size:clamp(2.4rem,8.5vw,5rem);
+    line-height:.96;letter-spacing:-.035em;
+    margin:0 0 18px;color:#EAF1F8;
+  }
+  h1 .cursor{color:var(--ok);font-weight:400;animation:blink 1.1s steps(1) infinite}
+  @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+  .tagline{font-size:clamp(1rem,2.4vw,1.2rem);color:var(--dim);max-width:58ch;margin:0 0 26px}
+  .tagline em{color:var(--text);font-style:normal;font-weight:600}
+  .links{display:flex;flex-wrap:wrap;gap:10px;font-family:var(--mono);font-size:13px}
+  .links a{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:9px 14px;border:1px solid var(--line);border-radius:6px;
+    background:var(--panel);text-decoration:none;color:var(--dim);
+    transition:border-color .15s,color .15s,transform .15s;
+  }
+  .links a:hover,.links a:focus-visible{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
+  .links a .k{color:var(--muted)}
+
+  /* ---------- terminal ---------- */
+  .term{
+    margin:38px 0 10px;background:var(--panel);
+    border:1px solid var(--line);border-radius:10px;overflow:hidden;
+    box-shadow:0 24px 60px -30px rgba(0,0,0,.9);
+  }
+  .term-bar{
+    display:flex;align-items:center;gap:8px;padding:10px 14px;
+    border-bottom:1px solid var(--line);background:var(--panel-2);
+    font-family:var(--mono);font-size:11.5px;color:var(--muted);
+  }
+  .dot{width:10px;height:10px;border-radius:50%;flex:none}
+  .term-title{margin-left:8px;letter-spacing:.04em}
+  .term-body{padding:20px 18px 24px;font-family:var(--mono);font-size:13px;line-height:1.95;overflow-x:auto}
+  .term-body .line{white-space:pre;display:block;opacity:0}
+  .term-body .line.show{opacity:1}
+  .c-prompt{color:var(--accent)}
+  .c-user{color:var(--ok)}
+  .c-dim{color:var(--muted)}
+  .c-ok{color:var(--ok)}
+  .c-amber{color:var(--amber)}
+  .c-alert{color:var(--alert)}
+  .port-row{
+    display:block;text-decoration:none;color:var(--dim);
+    border-radius:4px;padding:0 4px;margin:0 -4px;
+    transition:background .14s,color .14s;
+  }
+  .port-row:hover,.port-row:focus-visible{background:rgba(76,194,255,.1);color:#EAF1F8;outline:none}
+  .port-row:hover .svc,.port-row:focus-visible .svc{color:var(--accent)}
+  .svc{color:var(--text);transition:color .14s}
+  .caret{color:var(--ok);animation:blink 1.1s steps(1) infinite}
+
+  /* ---------- sections ---------- */
+  section{padding:64px 0;border-top:1px solid var(--line)}
+  .sec-head{font-family:var(--mono);font-size:13px;margin-bottom:34px;line-height:1.7}
+  .sec-head .p1{display:block;color:var(--muted)}
+  .sec-head .p1 .u{color:var(--ok)}
+  .sec-head .p1 .path{color:var(--accent)}
+  .sec-head .p2{display:block;color:var(--muted)}
+  .sec-head .p2 .cmd{color:var(--text)}
+  h2{
+    font-family:var(--mono);font-weight:700;
+    font-size:clamp(1.5rem,4vw,2.1rem);letter-spacing:-.02em;
+    margin:14px 0 0;color:#EAF1F8;
+  }
+
+  .grid{display:grid;gap:18px}
+  .two{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+  .three{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+
+  .card{
+    background:var(--panel);border:1px solid var(--line);
+    border-radius:10px;padding:24px;
+    transition:border-color .18s,transform .18s;
+  }
+  .card:hover{border-color:#2C3A4D;transform:translateY(-3px)}
+  .card h3{font-family:var(--mono);font-size:1.02rem;font-weight:700;margin:0 0 6px;color:#EAF1F8;letter-spacing:-.01em}
+  .card .meta{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-bottom:14px;letter-spacing:.04em}
+  .card ul{margin:0;padding-left:0;list-style:none}
+  .card ul li{position:relative;padding-left:20px;margin-bottom:9px;font-size:14.5px;color:var(--dim)}
+  .card ul li:last-child{margin-bottom:0}
+  .card ul li::before{content:'▸';position:absolute;left:0;top:0;color:var(--accent);font-family:var(--mono);font-size:12px}
+  .repo{
+    display:inline-flex;align-items:center;gap:7px;margin-top:16px;
+    font-family:var(--mono);font-size:12px;color:var(--muted);
+    text-decoration:none;border-bottom:1px solid transparent;transition:color .15s,border-color .15s;
+  }
+  .repo:hover,.repo:focus-visible{color:var(--accent);border-color:var(--accent)}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px}
+  .tag{font-family:var(--mono);font-size:11px;padding:3px 9px;border:1px solid var(--line);border-radius:20px;color:var(--muted);background:var(--panel-2)}
+
+  /* about */
+  .about{display:grid;grid-template-columns:1.4fr 1fr;gap:34px;align-items:start}
+  .about p{margin:0 0 16px;color:var(--dim);font-size:15.5px}
+  .about p strong{color:var(--text);font-weight:600}
+  .facts{border-left:2px solid var(--line);padding-left:20px}
+  .fact{margin-bottom:20px}
+  .fact:last-child{margin-bottom:0}
+  .fact .k{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px}
+  .fact .v{font-size:14.5px;color:var(--text)}
+  .fact .v small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
+
+  /* ---------- stats ---------- */
+  .sync-bar{
+    display:flex;flex-wrap:wrap;align-items:center;gap:14px 18px;
+    margin-bottom:22px;
+  }
+  .btn{
+    display:inline-flex;align-items:center;gap:9px;
+    font-family:var(--mono);font-size:13px;font-weight:500;
+    padding:10px 16px;border-radius:6px;cursor:pointer;
+    background:rgba(76,194,255,.1);color:var(--accent);
+    border:1px solid rgba(76,194,255,.45);
+    transition:background .15s,border-color .15s,transform .15s;
+  }
+  .btn:hover{background:rgba(76,194,255,.18);border-color:var(--accent);transform:translateY(-1px)}
+  .btn:disabled{cursor:progress;opacity:.75;transform:none}
+  .btn .ico{display:inline-block;font-size:15px;line-height:1}
+  .btn.busy .ico{animation:spin .9s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .sync-meta{font-family:var(--mono);font-size:12px;color:var(--muted)}
+  .sync-meta b{color:var(--text);font-weight:500}
+
+  .total{
+    display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 22px;
+    background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    padding:18px 24px;margin-bottom:18px;font-family:var(--mono);
+  }
+  .total .big{font-size:2.3rem;font-weight:800;color:#EAF1F8;letter-spacing:-.03em;line-height:1}
+  .total .lbl{font-size:12px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
+  .total .split{margin-left:auto;font-size:12.5px;color:var(--dim)}
+  .total .split span{margin-left:14px;white-space:nowrap}
+  .total .split span:first-child{margin-left:0}
+
+  .pcard{display:flex;flex-direction:column}
+  .pcard .top{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+  .pcard .top h3{margin:0}
+  .badge{
+    margin-left:auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;
+    padding:2px 8px;border-radius:20px;border:1px solid var(--line);color:var(--muted);white-space:nowrap;
+  }
+  .badge.live{color:var(--ok);border-color:rgba(124,227,139,.4)}
+  .badge.cached{color:var(--amber);border-color:rgba(242,193,78,.35)}
+  .badge.none{color:var(--alert);border-color:rgba(255,107,91,.35)}
+  .pcard .handle{font-family:var(--mono);font-size:12px;color:var(--muted);text-decoration:none}
+  .pcard .handle:hover{color:var(--accent)}
+  .solved{margin:18px 0 4px;font-family:var(--mono)}
+  .solved .n{font-size:2.6rem;font-weight:800;color:#EAF1F8;letter-spacing:-.03em;line-height:1}
+  .solved .u{font-size:12px;color:var(--muted);margin-left:8px;letter-spacing:.08em;text-transform:uppercase}
+  .bar{display:flex;gap:2px;height:8px;border-radius:4px;overflow:hidden;background:var(--panel-2);margin:14px 0 12px}
+  .bar i{display:block;height:100%;transition:flex-grow .6s ease}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-family:var(--mono);font-size:12px;color:var(--dim)}
+  .legend span{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+  .legend i{width:8px;height:8px;border-radius:2px;display:inline-block}
+  .kv{margin-top:16px;border-top:1px solid var(--line);padding-top:14px;display:grid;gap:7px}
+  .kv div{display:flex;justify-content:space-between;gap:12px;font-size:13.5px}
+  .kv .k{color:var(--muted);font-family:var(--mono);font-size:12px}
+  .kv .v{color:var(--text);font-family:var(--mono);font-size:13px;text-align:right}
+  .hr-badges{display:grid;gap:7px;margin-top:6px}
+  .hr-badges div{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;color:var(--dim)}
+  .stars{color:var(--amber);font-family:var(--mono);letter-spacing:1px;white-space:nowrap}
+  .stars .off{color:var(--line)}
+  .empty{color:var(--muted);font-size:13.5px;margin-top:14px}
+
+  .synclog{
+    margin-top:18px;background:var(--panel);border:1px solid var(--line);border-radius:8px;
+    font-family:var(--mono);font-size:12px;line-height:1.85;padding:14px 16px;
+    color:var(--dim);max-height:220px;overflow:auto;white-space:pre-wrap;word-break:break-word;
+  }
+  .synclog:empty{display:none}
+
+  /* skills */
+  .skillrow{display:grid;grid-template-columns:190px 1fr;gap:20px;padding:20px 0;border-bottom:1px solid var(--line);align-items:start}
+  .skillrow:last-child{border-bottom:none}
+  .skillrow .label{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.06em;padding-top:3px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{font-family:var(--mono);font-size:12.5px;padding:5px 11px;background:var(--panel);border:1px solid var(--line);border-radius:5px;color:var(--dim)}
+
+  /* footer */
+  footer{border-top:1px solid var(--line);padding:60px 0 70px}
+  .contact-line{font-family:var(--mono);font-size:13px;color:var(--muted);margin-bottom:22px}
+  .contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:38px}
+  .contact-grid a{
+    display:block;padding:16px 18px;background:var(--panel);
+    border:1px solid var(--line);border-radius:8px;text-decoration:none;
+    transition:border-color .16s,transform .16s;
+  }
+  .contact-grid a:hover,.contact-grid a:focus-visible{border-color:var(--accent);transform:translateY(-2px)}
+  .contact-grid .k{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+  .contact-grid .v{font-family:var(--mono);font-size:14px;color:var(--text);word-break:break-all}
+  .colophon{font-family:var(--mono);font-size:11.5px;color:var(--muted);line-height:1.9}
+
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease}
+  .reveal.in{opacity:1;transform:none}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
+
+  @media (max-width:760px){
+    .wrap{padding:0 16px}
+    .about{grid-template-columns:1fr;gap:26px}
+    .skillrow{grid-template-columns:1fr;gap:10px}
+    .term-body{font-size:11px;line-height:1.9}
+    .total .split{margin-left:0;width:100%}
+    section{padding:48px 0}
+    header{padding:48px 0 20px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+    .reveal{opacity:1;transform:none}
+    .term-body .line{opacity:1}
+  }
+</style>
+</head>
+<body>
+
+<div class="statusbar">
+  <div class="wrap">
+    <span class="host"><span class="pulse"></span>hitesh<span class="at">@</span>dev<span class="at">:~$</span></span>
+    <nav>
+      <a href="#whoami">whoami</a>
+      <a href="#stats">stats</a>
+      <a href="#skills">skills</a>
+      <a href="#projects">projects</a>
+      <a href="#contact">contact</a>
+      <a class="alt" href="index.html">security ↗</a>
+    </nav>
+  </div>
+</div>
+
+<header>
+  <div class="wrap">
+    <p class="eyebrow">Nagpur, India &nbsp;·&nbsp; <b>available</b> for software development internships</p>
+    <h1>HITESH<br>CHANDAK<span class="cursor">_</span></h1>
+    <p class="tagline">Computer engineering undergraduate who builds tools in <em>Python</em>, <em>Java</em> and <em>C</em> — and keeps problem-solving sharp with daily DSA on LeetCode, GeeksforGeeks and HackerRank.</p>
+
+    <div class="links">
+      <a href="https://github.com/itachi2112-Tsukuyomi" target="_blank" rel="noopener"><span class="k">gh</span> itachi2112-Tsukuyomi</a>
+      <a href="https://www.linkedin.com/in/hitesh-chandak" target="_blank" rel="noopener"><span class="k">in</span> hitesh-chandak</a>
+      <a href="https://codolio.com/profile/itachi2112" target="_blank" rel="noopener"><span class="k">dsa</span> codolio/itachi2112</a>
+      <a href="mailto:chandakhitesh77@gmail.com"><span class="k">mail</span> chandakhitesh77@gmail.com</a>
+    </div>
+
+    <div class="term">
+      <div class="term-bar">
+        <span class="dot" style="background:#FF6B5B"></span>
+        <span class="dot" style="background:#F2C14E"></span>
+        <span class="dot" style="background:#7CE38B"></span>
+        <span class="term-title">hitesh@dev — profile</span>
+      </div>
+      <div class="term-body" id="term" aria-label="Terminal-style summary of this page and live coding stats"></div>
+    </div>
+  </div>
+</header>
+
+<section id="whoami">
+  <div class="wrap reveal">
+    <div class="sec-head">
+      <span class="p1">┌──(<span class="u">hitesh㉿dev</span>)-[<span class="path">~</span>]</span>
+      <span class="p2">└─$ <span class="cmd">cat README.md</span></span>
+      <h2>whoami</h2>
+    </div>
+    <div class="about">
+      <div>
+        <p>I'm a B.Tech Computer Engineering student at <strong>Shri Ramdeobaba College of Engineering, Nagpur</strong>. I like building small, sharp tools that do one job well — and then making them fast and easy to use.</p>
+        <p>Most of my code is <strong>Python</strong>: a PyTorch model served through a Streamlit dashboard, AWS automation with boto3, and scripts that glue data pipelines together. I use <strong>Java</strong> and <strong>C</strong> for data structures and algorithms, which I practise every day.</p>
+        <p>I also like teaching — I've run workshops and designed challenges for my peers, because explaining something clearly is the fastest way to find the gaps in your own understanding.</p>
+      </div>
+      <div class="facts">
+        <div class="fact">
+          <span class="k">Education</span>
+          <span class="v">B.Tech Computer Engineering<small>RCOEM Nagpur · Aug 2023 – Present · SGPA 8.5</small></span>
+        </div>
+        <div class="fact">
+          <span class="k">Problems solved</span>
+          <span class="v" id="fact-total">—<small>across LeetCode, GFG &amp; HackerRank</small></span>
+        </div>
+        <div class="fact">
+          <span class="k">Looking for</span>
+          <span class="v">Software development internships<small>Backend, tooling, Python / Java</small></span>
+        </div>
+        <div class="fact">
+          <span class="k">Languages</span>
+          <span class="v">English (professional)<small>Hindi (native)</small></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="stats">
+  <div class="wrap reveal">
+    <div class="sec-head">
+      <span class="p1">┌──(<span class="u">hitesh㉿dev</span>)-[<span class="path">~/dsa</span>]</span>
+      <span class="p2">└─$ <span class="cmd">./sync-profiles --all</span></span>
+      <h2>coding profiles</h2>
+    </div>
+
+    <div class="sync-bar">
+      <button class="btn" id="sync-btn" type="button"><span class="ico" aria-hidden="true">↻</span><span class="txt">update</span></button>
+      <span class="sync-meta" id="sync-meta" aria-live="polite">loading saved stats…</span>
+    </div>
+
+    <div class="total">
+      <span class="big" id="total-n">—</span>
+      <span class="lbl">problems solved</span>
+      <span class="split" id="total-split"></span>
+    </div>
+
+    <div class="grid three" id="cards"></div>
+    <div class="synclog" id="synclog" aria-live="polite"></div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap reveal">
+    <div class="sec-head">
+      <span class="p1">┌──(<span class="u">hitesh㉿dev</span>)-[<span class="path">~/toolkit</span>]</span>
+      <span class="p2">└─$ <span class="cmd">ls -1 --group</span></span>
+      <h2>skills</h2>
+    </div>
+    <div class="skillrow">
+      <span class="label">languages/</span>
+      <div class="chips"><span class="chip">Python</span><span class="chip">Java</span><span class="chip">C</span><span class="chip">Bash</span></div>
+    </div>
+    <div class="skillrow">
+      <span class="label">fundamentals/</span>
+      <div class="chips"><span class="chip">Data Structures</span><span class="chip">Algorithms</span><span class="chip">Problem Solving</span><span class="chip">Networking</span></div>
+    </div>
+    <div class="skillrow">
+      <span class="label">frameworks/</span>
+      <div class="chips"><span class="chip">PyTorch</span><span class="chip">Streamlit</span><span class="chip">boto3</span></div>
+    </div>
+    <div class="skillrow">
+      <span class="label">platforms/</span>
+      <div class="chips"><span class="chip">Linux</span><span class="chip">Git &amp; GitHub</span><span class="chip">GitHub Actions</span><span class="chip">AWS (S3, IAM, EC2)</span><span class="chip">Google Cloud</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="wrap reveal">
+    <div class="sec-head">
+      <span class="p1">┌──(<span class="u">hitesh㉿dev</span>)-[<span class="path">~/projects</span>]</span>
+      <span class="p2">└─$ <span class="cmd">git log --oneline</span></span>
+      <h2>projects</h2>
+    </div>
+    <div class="grid two">
+      <div class="card">
+        <h3>Phishing Link Analyzer</h3>
+        <div class="meta">DEEP LEARNING · REAL-TIME PIPELINE</div>
+        <ul>
+          <li>Built a PyTorch 1D-CNN that classifies URLs and explains each verdict, served through an interactive Streamlit dashboard.</li>
+          <li>Wired it into a live traffic feed (Wireshark) so domains are scored in real time and alerts fire automatically.</li>
+        </ul>
+        <div class="tags"><span class="tag">Python</span><span class="tag">PyTorch</span><span class="tag">Streamlit</span></div>
+        <a class="repo" href="https://github.com/itachi2112-Tsukuyomi?tab=repositories" target="_blank" rel="noopener">→ view source</a>
+      </div>
+      <div class="card">
+        <h3>S3 Bucket Security Scanner</h3>
+        <div class="meta">CLI TOOL · AWS</div>
+        <ul>
+          <li>Wrote a Python tool that walks an AWS account and flags publicly accessible or misconfigured S3 buckets.</li>
+          <li>Checks anonymous access and permission drift, and reports the exposure per bucket.</li>
+        </ul>
+        <div class="tags"><span class="tag">Python</span><span class="tag">boto3</span><span class="tag">AWS</span></div>
+        <a class="repo" href="https://github.com/itachi2112-Tsukuyomi?tab=repositories" target="_blank" rel="noopener">→ view source</a>
+      </div>
+      <div class="card">
+        <h3>Live Coding-Stats Portfolio</h3>
+        <div class="meta">STATIC SITE · GITHUB ACTIONS</div>
+        <ul>
+          <li>This page: a zero-backend site that pulls LeetCode, GeeksforGeeks and HackerRank stats live when you press update.</li>
+          <li>A scheduled GitHub Action snapshots the same stats server-side, so the page still has numbers when a public API is down.</li>
+        </ul>
+        <div class="tags"><span class="tag">JavaScript</span><span class="tag">Node.js</span><span class="tag">GitHub Actions</span></div>
+        <a class="repo" href="https://github.com/itachi2112-Tsukuyomi/itachi2112-Tsukuyomi.github.io" target="_blank" rel="noopener">→ view source</a>
+      </div>
+      <div class="card">
+        <h3>Workshops &amp; Challenge Design</h3>
+        <div class="meta">COMMUNITY · RCOEM</div>
+        <ul>
+          <li>Designed beginner-friendly challenges and walkthroughs, then ran the workshops around them.</li>
+          <li>Coordinated <strong>ByteBreak CTF</strong> for students at RCOEM.</li>
+        </ul>
+        <div class="tags"><span class="tag">Teaching</span><span class="tag">Event Ops</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="wrap reveal">
+    <div class="contact-line">┌──(<span class="c-ok">hitesh㉿dev</span>)-[~]<br>└─$ echo "open to software development internship roles"</div>
+    <div class="contact-grid">
+      <a href="mailto:chandakhitesh77@gmail.com"><span class="k">Email</span><span class="v">chandakhitesh77@gmail.com</span></a>
+      <a href="tel:+919503201370"><span class="k">Phone</span><span class="v">+91 95032 01370</span></a>
+      <a href="https://github.com/itachi2112-Tsukuyomi" target="_blank" rel="noopener"><span class="k">GitHub</span><span class="v">itachi2112-Tsukuyomi</span></a>
+      <a href="https://www.linkedin.com/in/hitesh-chandak" target="_blank" rel="noopener"><span class="k">LinkedIn</span><span class="v">hitesh-chandak</span></a>
+      <a href="https://codolio.com/profile/itachi2112" target="_blank" rel="noopener"><span class="k">Codolio</span><span class="v">itachi2112</span></a>
+      <a href="Resume_Hitesh_Chandak.pdf" target="_blank" rel="noopener"><span class="k">Resume</span><span class="v">download PDF</span></a>
+    </div>
+    <p class="colophon">
+      Nagpur, Maharashtra, India<br>
+      Built by hand. No trackers, no analytics, no cookies.<br>
+      <span style="color:var(--ok)">exit 0</span>
+    </p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+
+  // ------------------------------------------------------------------
+  // Platforms. Handles live in data/profiles.json (shared with the
+  // GitHub Action); these defaults are used only if that file is missing.
+  // ------------------------------------------------------------------
+  var PROFILES = { leetcode:'itachi2112', gfg:'itachi2112', hackerrank:'itachi2112' };
+  var META = {
+    leetcode:   { name:'LeetCode',      url:function(u){return 'https://leetcode.com/u/'+u+'/';} },
+    gfg:        { name:'GeeksforGeeks', url:function(u){return 'https://www.geeksforgeeks.org/user/'+u+'/';} },
+    hackerrank: { name:'HackerRank',    url:function(u){return 'https://www.hackerrank.com/profile/'+u;} }
+  };
+  var ORDER = ['leetcode','gfg','hackerrank'];
+  var COLORS = { school:'#8494A8', basic:'#4CC2FF', easy:'#3DD6B5', medium:'#F2C14E', hard:'#FF6B5B' };
+  var LS_KEY = 'sde-stats-v1';
+
+  // state[key] = { data, status:'live'|'cached'|'none', at:ISO }
+  var state = {};
+
+  // ---------- helpers ----------
+  function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+  function num(v){ return v===null||v===undefined||v===''||isNaN(Number(v)) ? null : Number(v); }
+  function fmt(n){ return n===null||n===undefined ? '—' : Number(n).toLocaleString('en-IN'); }
+  function when(iso){
+    if(!iso) return 'never';
+    var d = new Date(iso), s = (Date.now()-d.getTime())/1000;
+    if(s < 60) return 'just now';
+    if(s < 3600) return Math.floor(s/60)+' min ago';
+    if(s < 86400) return Math.floor(s/3600)+' h ago';
+    return d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+  }
+  function lsGet(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)||'null'); }catch(e){ return null; } }
+  function lsSet(v){ try{ localStorage.setItem(LS_KEY, JSON.stringify(v)); }catch(e){} }
+
+  function getJSON(url, opts, ms){
+    var ctl = ('AbortController' in window) ? new AbortController() : null;
+    var t = ctl ? setTimeout(function(){ ctl.abort(); }, ms||12000) : null;
+    var o = Object.assign({ cache:'no-store' }, opts||{});
+    if(ctl) o.signal = ctl.signal;
+    return fetch(url, o).then(function(r){
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      return r.json();
+    }).finally(function(){ if(t) clearTimeout(t); });
+  }
+
+  // Some platforms don't send CORS headers; try public CORS proxies in turn.
+  var PROXIES = [
+    function(u){ return 'https://corsproxy.io/?url='+encodeURIComponent(u); },
+    function(u){ return 'https://api.allorigins.win/raw?url='+encodeURIComponent(u); },
+    function(u){ return 'https://api.codetabs.com/v1/proxy/?quest='+encodeURIComponent(u); }
+  ];
+  function viaProxy(url){
+    var i = 0;
+    function next(err){
+      if(i >= PROXIES.length) return Promise.reject(err || new Error('all proxies failed'));
+      var p = PROXIES[i++];
+      return getJSON(p(url)).catch(next);
+    }
+    return next();
+  }
+
+  // ---------- sources (tried in order; first valid payload wins) ----------
+  var SOURCES = {
+    leetcode: [
+      { host:'leetcode-api-faisalshohag.vercel.app', get:function(u){
+        return getJSON('https://leetcode-api-faisalshohag.vercel.app/'+encodeURIComponent(u)).then(function(j){
+          if(typeof j.totalSolved !== 'number') throw new Error(j.errors ? 'user not found' : 'bad payload');
+          return { solved:j.totalSolved, easy:j.easySolved, medium:j.mediumSolved, hard:j.hardSolved, ranking:num(j.ranking) };
+        });
+      }},
+      { host:'alfa-leetcode-api.onrender.com', get:function(u){
+        return getJSON('https://alfa-leetcode-api.onrender.com/'+encodeURIComponent(u)+'/solved', null, 20000).then(function(j){
+          if(typeof j.solvedProblem !== 'number') throw new Error('bad payload');
+          return { solved:j.solvedProblem, easy:j.easySolved, medium:j.mediumSolved, hard:j.hardSolved };
+        });
+      }},
+      { host:'leetcode-stats-api.herokuapp.com', get:function(u){
+        return getJSON('https://leetcode-stats-api.herokuapp.com/'+encodeURIComponent(u)).then(function(j){
+          if(j.status !== 'success') throw new Error(j.message || 'bad payload');
+          return { solved:j.totalSolved, easy:j.easySolved, medium:j.mediumSolved, hard:j.hardSolved, ranking:num(j.ranking) };
+        });
+      }}
+    ],
+    gfg: [
+      { host:'geeks-for-geeks-api.vercel.app', get:function(u){
+        return getJSON('https://geeks-for-geeks-api.vercel.app/'+encodeURIComponent(u)).then(function(j){
+          var i = j && j.info; if(!i) throw new Error((j && j.error) || 'bad payload');
+          var s = j.solvedStats || {}, c = function(k){ return s[k] ? num(s[k].count) : null; };
+          return { solved:num(i.totalProblemsSolved), codingScore:num(i.codingScore), instituteRank:num(i.instituteRank),
+                   streak:num(i.maxStreak!=null ? i.maxStreak : i.currentStreak),
+                   school:c('school'), basic:c('basic'), easy:c('easy'), medium:c('medium'), hard:c('hard') };
+        });
+      }},
+      { host:'authapi.geeksforgeeks.org (via proxy)', get:function(u){
+        return viaProxy('https://authapi.geeksforgeeks.org/api-get/user-profile-info/?handle='+encodeURIComponent(u)+'&article_count=false&redirect=true').then(function(j){
+          var d = j && j.data; if(!d || d.total_problems_solved === undefined) throw new Error('bad payload');
+          return { solved:num(d.total_problems_solved), codingScore:num(d.score), instituteRank:num(d.institute_rank), streak:num(d.pod_solved_longest_streak) };
+        });
+      }}
+    ],
+    hackerrank: [
+      { host:'hackerrank.com/rest (via proxy)', get:function(u){
+        return viaProxy('https://www.hackerrank.com/rest/hackers/'+encodeURIComponent(u)+'/badges').then(function(j){
+          if(!j || !Array.isArray(j.models)) throw new Error('bad payload');
+          var b = j.models.filter(function(x){ return x.stars>0 || x.solved>0; })
+            .map(function(x){ return { name:x.badge_name, stars:x.stars||0, solved:x.solved||0 }; })
+            .sort(function(a,c){ return c.stars-a.stars || c.solved-a.solved; });
+          return { solved:b.reduce(function(s,x){return s+x.solved;},0),
+                   badgeCount:b.filter(function(x){return x.stars>0;}).length,
+                   stars:b.reduce(function(s,x){return s+x.stars;},0), badges:b };
+        });
+      }}
+    ]
+  };
+
+  // ---------- rendering ----------
+  var cardsEl = document.getElementById('cards');
+  var logEl = document.getElementById('synclog');
+  var metaEl = document.getElementById('sync-meta');
+
+  function statusBadge(st){
+    if(!st || st.status==='none') return '<span class="badge none">no data</span>';
+    if(st.status==='live') return '<span class="badge live">● live</span>';
+    return '<span class="badge cached" title="Saved snapshot">cached · '+esc(when(st.at))+'</span>';
+  }
+
+  function diffBar(d, keys){
+    var parts = keys.filter(function(k){ return num(d[k]) > 0; });
+    if(!parts.length) return '';
+    var bar = parts.map(function(k){ return '<i style="flex-grow:'+d[k]+';background:'+COLORS[k]+'" title="'+k+': '+d[k]+'"></i>'; }).join('');
+    var leg = parts.map(function(k){ return '<span><i style="background:'+COLORS[k]+'"></i>'+k+' <b style="color:var(--text);font-weight:500">'+fmt(d[k])+'</b></span>'; }).join('');
+    return '<div class="bar" role="img" aria-label="Solved by difficulty">'+bar+'</div><div class="legend">'+leg+'</div>';
+  }
+
+  function kv(rows){
+    rows = rows.filter(function(r){ return r[1]!==null && r[1]!==undefined; });
+    if(!rows.length) return '';
+    return '<div class="kv">'+rows.map(function(r){ return '<div><span class="k">'+esc(r[0])+'</span><span class="v">'+esc(r[1])+'</span></div>'; }).join('')+'</div>';
+  }
+
+  function stars(n){ var s=''; for(var i=0;i<5;i++) s += i<n ? '★' : '<span class="off">★</span>'; return s; }
+
+  function renderCard(key){
+    var m = META[key], u = PROFILES[key], st = state[key], d = st && st.data;
+    var h = '<div class="card pcard">'
+      + '<div class="top"><h3>'+m.name+'</h3>'+statusBadge(st)+'</div>'
+      + '<a class="handle" href="'+esc(m.url(u))+'" target="_blank" rel="noopener">@'+esc(u)+' ↗</a>';
+    if(!d){
+      h += '<div class="solved"><span class="n">—</span></div><p class="empty">'+(synced ? 'Couldn\u2019t reach '+m.name+' right now — try <b>update</b> again in a bit.' : 'No stats yet — press <b>update</b> to fetch.')+'</p>';
+      return h+'</div>';
+    }
+    h += '<div class="solved"><span class="n">'+fmt(d.solved)+'</span><span class="u">'+(key==='hackerrank'?'challenges':'solved')+'</span></div>';
+    if(key==='leetcode'){
+      h += diffBar(d,['easy','medium','hard']);
+      h += kv([['global rank', d.ranking!=null?'#'+fmt(d.ranking):null],
+               ['contest rating', d.contestRating!=null?fmt(d.contestRating):null],
+               ['contests', d.contests!=null?fmt(d.contests):null],
+               ['top', d.topPercentage!=null?d.topPercentage+'%':null]]);
+    } else if(key==='gfg'){
+      h += diffBar(d,['school','basic','easy','medium','hard']);
+      h += kv([['coding score', d.codingScore!=null?fmt(d.codingScore):null],
+               ['institute rank', d.instituteRank!=null?'#'+fmt(d.instituteRank):null],
+               ['longest streak', d.streak!=null?fmt(d.streak)+' days':null]]);
+    } else {
+      var b = (d.badges||[]).slice(0,5);
+      h += kv([['badges', d.badgeCount!=null?fmt(d.badgeCount):null], ['total stars', d.stars!=null?fmt(d.stars):null]]);
+      if(b.length){
+        h += '<div class="hr-badges">'+b.map(function(x){ return '<div><span>'+esc(x.name)+'</span><span class="stars" aria-label="'+x.stars+' of 5 stars">'+stars(x.stars)+'</span></div>'; }).join('')+'</div>';
+      }
+    }
+    return h+'</div>';
+  }
+
+  function renderAll(){
+    cardsEl.innerHTML = ORDER.map(renderCard).join('');
+    var total = 0, any = false, split = [];
+    ORDER.forEach(function(k){
+      var d = state[k] && state[k].data;
+      if(d && num(d.solved)!==null){ total += d.solved; any = true; split.push('<span>'+META[k].name+' <b style="color:var(--text)">'+fmt(d.solved)+'</b></span>'); }
+    });
+    document.getElementById('total-n').textContent = any ? fmt(total) : '—';
+    document.getElementById('total-split').innerHTML = split.join('');
+    document.getElementById('fact-total').firstChild.nodeValue = any ? fmt(total)+'+' : '—';
+    renderTermStats();
+  }
+
+  function log(tag, cls, msg){
+    var line = document.createElement('div');
+    line.innerHTML = '<span class="'+cls+'">['+tag+']</span> '+esc(msg);
+    logEl.appendChild(line);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  // ---------- load cache: GitHub-Action snapshot + this browser's last live result ----------
+  function applyCache(snap){
+    var local = lsGet() || {};
+    ORDER.forEach(function(k){
+      var a = snap && snap.platforms && snap.platforms[k];
+      var b = local[k];
+      // ignore cached data for a different handle
+      if(a && a.handle && a.handle !== PROFILES[k]) a = null;
+      if(b && b.handle !== PROFILES[k]) b = null;
+      var pick = a && b ? (new Date(a.fetchedAt) > new Date(b.at) ? {data:a, at:a.fetchedAt} : {data:b.data, at:b.at})
+               : a ? {data:a, at:a.fetchedAt} : b ? {data:b.data, at:b.at} : null;
+      state[k] = pick ? { data:pick.data, status:'cached', at:pick.at } : { data:null, status:'none' };
+    });
+  }
+
+  // ---------- update (live) ----------
+  var btn = document.getElementById('sync-btn');
+  var busy = false, synced = false;
+
+  function syncOne(key){
+    var list = SOURCES[key], u = PROFILES[key], i = 0;
+    if(!u) return Promise.resolve(false);
+    function attempt(){
+      if(i >= list.length){
+        log('FAIL','c-alert', META[key].name+': every source failed'+(state[key].data?' — keeping cached numbers':''));
+        return false;
+      }
+      var s = list[i++], t0 = performance.now();
+      return s.get(u).then(function(d){
+        if(d.solved === null || d.solved === undefined) throw new Error('empty payload');
+        var prev = state[key].data;
+        // keep extra fields (e.g. contest rating from the Action) the live source doesn't return
+        if(prev) Object.keys(prev).forEach(function(f){ if(d[f]===undefined && f!=='source' && f!=='fetchedAt') d[f]=prev[f]; });
+        d.handle = u;
+        var at = new Date().toISOString();
+        state[key] = { data:d, status:'live', at:at };
+        var local = lsGet() || {}; local[key] = { handle:u, data:d, at:at }; lsSet(local);
+        log(' OK ','c-ok', META[key].name+' ← '+s.host+' ('+Math.round(performance.now()-t0)+' ms)');
+        renderAll();
+        return true;
+      }).catch(function(e){
+        log('MISS','c-amber', META[key].name+' ✕ '+s.host+': '+(e.name==='AbortError'?'timeout':e.message));
+        return attempt();
+      });
+    }
+    return attempt();
+  }
+
+  function update(){
+    if(busy) return;
+    busy = true;
+    btn.disabled = true; btn.classList.add('busy'); btn.querySelector('.txt').textContent = 'updating…';
+    metaEl.textContent = 'fetching live stats…';
+    logEl.innerHTML = '';
+    log('INFO','c-prompt','sync started '+new Date().toLocaleTimeString('en-IN'));
+    Promise.all(ORDER.map(syncOne)).then(function(res){
+      var ok = res.filter(Boolean).length;
+      synced = true; renderAll();
+      log('DONE','c-prompt', ok+'/'+ORDER.length+' platforms updated live');
+      metaEl.innerHTML = ok===ORDER.length ? 'all platforms <b>live</b> · '+esc(new Date().toLocaleTimeString('en-IN'))
+        : ok ? '<b>'+ok+'/'+ORDER.length+'</b> live · the rest show cached numbers'
+        : 'live APIs unreachable · showing cached numbers';
+    }).finally(function(){
+      busy = false;
+      btn.disabled = false; btn.classList.remove('busy'); btn.querySelector('.txt').textContent = 'update';
+    });
+  }
+  btn.addEventListener('click', update);
+
+  // ---------- hero terminal ----------
+  var term = document.getElementById('term');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function pad(s,n){ s=String(s); while(s.length<n) s+=' '; return s; }
+  function termStat(k){
+    var d = state[k] && state[k].data;
+    if(!d) return '<span class="c-dim">— no data yet</span>';
+    var x = k==='leetcode' ? 'E '+fmt(d.easy)+' · M '+fmt(d.medium)+' · H '+fmt(d.hard)
+          : k==='gfg' ? (d.codingScore!=null?'score '+fmt(d.codingScore):'')
+          : (d.badgeCount!=null?fmt(d.badgeCount)+' badges · '+fmt(d.stars)+'★':'');
+    return '<span class="c-ok">'+pad(fmt(d.solved),6)+'</span><span class="svc">'+pad(k==='hackerrank'?'challenges':'solved',12)+'</span><span class="c-dim">'+esc(x)+'</span>';
+  }
+  var lines = [
+    {h:'<span class="c-prompt">┌──(</span><span class="c-user">hitesh㉿dev</span><span class="c-prompt">)-[~]</span>'},
+    {h:'<span class="c-prompt">└─$</span> ./sync-profiles --summary'},
+    {h:''},
+    {h:'<span class="c-dim">PLATFORM        COUNT  UNIT        DETAIL</span>'},
+    {h:'  leetcode      ', stat:'leetcode', href:'#stats'},
+    {h:'  geeksforgeeks ', stat:'gfg', href:'#stats'},
+    {h:'  hackerrank    ', stat:'hackerrank', href:'#stats'},
+    {h:''},
+    {h:'<span class="c-prompt">└─$</span> ls ~'},
+    {h:'  <span class="svc">whoami/</span>   <span class="svc">skills/</span>   <span class="svc">projects/</span>   <span class="svc">contact/</span>   <span class="c-dim">→ click a row</span>'},
+    {h:'  <span class="c-dim">README.md — RCOEM computer engineering, SGPA 8.5</span>', href:'#whoami'},
+    {h:'  <span class="c-dim">toolkit/  — Python, Java, C, PyTorch, AWS</span>', href:'#skills'},
+    {h:'  <span class="c-dim">projects/ — 4 builds, code on GitHub</span>', href:'#projects'},
+    {h:'  <span class="c-amber">contact   — hiring? start here</span>', href:'#contact'},
+    {h:''},
+    {h:'<span class="c-prompt">└─$</span> <span class="caret">_</span>'}
+  ];
+  var statEls = {};
+  function buildLine(l){
+    var el = document.createElement(l.href ? 'a' : 'span');
+    if(l.href){ el.href = l.href; el.className = 'line port-row'; } else el.className = 'line';
+    if(l.stat){ el.innerHTML = l.h; var s = document.createElement('span'); el.appendChild(s); statEls[l.stat] = s; s.innerHTML = termStat(l.stat); }
+    else el.innerHTML = l.h === '' ? '&nbsp;' : l.h;
+    term.appendChild(el);
+    return el;
+  }
+  function renderTermStats(){ Object.keys(statEls).forEach(function(k){ statEls[k].innerHTML = termStat(k); }); }
+  if(reduce){ lines.forEach(function(l){ buildLine(l).classList.add('show'); }); }
+  else {
+    var li = 0;
+    (function step(){
+      if(li >= lines.length) return;
+      var el = buildLine(lines[li]);
+      requestAnimationFrame(function(){ el.classList.add('show'); });
+      var gap = lines[li].h === '' ? 40 : (lines[li].href ? 95 : 130);
+      li++; setTimeout(step, gap);
+    })();
+  }
+
+  // ---------- boot ----------
+  ORDER.forEach(function(k){ state[k] = { data:null, status:'none' }; });
+  renderAll();
+  getJSON('data/profiles.json', null, 6000).then(function(p){ ORDER.forEach(function(k){ if(p && p[k]) PROFILES[k] = p[k]; }); }).catch(function(){})
+    .then(function(){ return getJSON('data/stats.json', null, 6000).catch(function(){ return null; }); })
+    .then(function(snap){
+      applyCache(snap);
+      renderAll();
+      var have = ORDER.filter(function(k){ return state[k].data; }).length;
+      if(have === 0){ update(); }  // nothing saved yet: fetch live straight away
+      else metaEl.innerHTML = 'showing saved stats · press <b>update</b> for live numbers';
+    });
+
+  // scroll reveals
+  if(!reduce && 'IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {threshold:0.08, rootMargin:'0px 0px -40px 0px'});
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
+  }
+})();
+</script>
+</body>
+</html>
