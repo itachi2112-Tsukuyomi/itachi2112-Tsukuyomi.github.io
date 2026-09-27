@@ -659,7 +659,8 @@
   ];
   var EXTRA_PROXIES = [
     function(u){ return 'https://api.cors.lol/?url='+encodeURIComponent(u); },
-    function(u){ return 'https://thingproxy.freeboard.io/fetch/'+u; }
+    function(u){ return 'https://thingproxy.freeboard.io/fetch/'+u; },
+    function(u){ return 'https://r.jina.ai/'+u; }
   ];
   function getText(url, ms){
     var ctl = ('AbortController' in window) ? new AbortController() : null;
@@ -683,7 +684,18 @@
     }
     return any(ps);
   }
-  function viaProxy(url, wide){ return proxyText(url, wide).then(function(t){ return JSON.parse(t); }); }
+  // Some relays prepend a text header, so fall back to the outermost {...} block.
+  function parseJSONish(t){
+    try{ return JSON.parse(t); }catch(e){
+      var a = t.indexOf('{'), b = t.lastIndexOf('}');
+      if(a < 0 || b <= a) throw new Error('bad payload');
+      return JSON.parse(t.slice(a, b+1));
+    }
+  }
+  function viaProxy(url, wide){
+    var raw = proxyText(url, wide);
+    return raw.then(parseJSONish);
+  }
   // Only corsproxy.io forwards POST bodies.
   function postViaProxy(url, body){
     return getJSON(PROXIES[0](url), { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) }, 15000);
@@ -830,7 +842,7 @@
   function statusBadge(st){
     if(!st || st.status==='none') return '<span class="badge none">No data</span>';
     if(st.status==='live') return '<span class="badge live">● Live</span>';
-    if(st.status==='synced' && isFresh(st.at)) return '<span class="badge synced" title="Checked automatically every hour by GitHub Actions">✓ Synced · '+esc(when(st.at))+'</span>';
+    if(st.status==='synced' && isFresh(st.at)) return '<span class="badge synced" title="Checked automatically by GitHub Actions">✓ Synced · '+esc(when(st.at))+'</span>';
     return '<span class="badge cached" title="Last saved numbers">Saved · '+esc(when(st.at))+'</span>';
   }
 
@@ -907,7 +919,7 @@
   // ---------- server sync: GitHub Action runs hourly and commits data/stats.json ----------
   // Read it straight from the repo (CORS-enabled, no Pages rebuild delay), falling back to the deployed copy.
   var REPO = 'itachi2112-Tsukuyomi/itachi2112-Tsukuyomi.github.io';
-  var FRESH_MS = 3 * 3600 * 1000;
+  var FRESH_MS = 24 * 3600 * 1000;
   function isFresh(iso){ return iso && (Date.now() - new Date(iso).getTime()) < FRESH_MS; }
   function loadSnapshot(){
     return getJSON('https://raw.githubusercontent.com/'+REPO+'/main/data/stats.json?t='+Date.now(), null, 8000)
@@ -942,20 +954,20 @@
   var btn = document.getElementById('sync-btn');
   var busy = false, synced = false;
 
+  // Returns true (live), 'synced' (recent server check) or false (only older saved numbers).
   function syncOne(key){
-    var list = SOURCES[key], u = PROFILES[key], done = false, t0 = performance.now();
+    var list = SOURCES[key], u = PROFILES[key], t0 = performance.now(), misses = [];
     if(!u) return Promise.resolve(false);
     var tries = list.map(function(s){
       return s.get(u).then(function(d){
         if(d.solved === null || d.solved === undefined) throw new Error('empty payload');
         return { d:d, s:s };
       }).catch(function(e){
-        if(!done) log('MISS','c-amber', META[key].name+' ✕ '+s.host+': '+(e.name==='AbortError'?'timeout':e.message));
+        misses.push(s.host+': '+(e.name==='AbortError'?'timeout':e.message));
         throw e;
       });
     });
     return any(tries).then(function(r){
-      done = true;
       var d = r.d, prev = state[key].data;
       // keep extra fields (e.g. contest rating from the Action) the live source doesn't return
       if(prev && prev.handle === u) Object.keys(prev).forEach(function(f){ if((d[f]===undefined || d[f]===null) && f!=='source' && f!=='fetchedAt') d[f]=prev[f]; });
@@ -967,7 +979,7 @@
         renderAll();
       }
       save();
-      log(' OK ','c-ok', META[key].name+' ← '+r.s.host+' ('+Math.round(performance.now()-t0)+' ms)');
+      log('OK','c-ok', META[key].name+' — live ('+Math.round(performance.now()-t0)+' ms via '+r.s.host+')');
       if(key === 'gfg' && d.easy == null){
         return gfgDifficulty(u).then(function(x){ Object.assign(d, x); save(); }, function(){}).then(function(){ return true; });
       }
@@ -975,10 +987,11 @@
     }, function(){
       var st = state[key];
       if(st.status === 'synced' && isFresh(st.at)){
-        log('INFO','c-prompt', META[key].name+': live sources busy — using the hourly server sync from '+when(st.at));
+        log('OK','c-ok', META[key].name+' — up to date (checked by the server '+when(st.at)+')');
         return 'synced';
       }
-      log('FAIL','c-alert', META[key].name+': every source failed'+(st.data?' — keeping saved numbers':''));
+      log('FAIL','c-alert', META[key].name+' — couldn’t refresh'+(st.data?'; showing numbers from '+when(st.at):''));
+      misses.forEach(function(m){ log('MISS','c-amber', '   '+m); });
       return false;
     });
   }
@@ -989,15 +1002,15 @@
     btn.disabled = true; btn.classList.add('busy'); btn.querySelector('.txt').textContent = 'Refreshing…';
     metaEl.textContent = 'Fetching live stats…';
     logEl.innerHTML = '';
-    log('INFO','c-prompt','Sync started '+new Date().toLocaleTimeString('en-IN'));
+    log('INFO','c-prompt','Checking your profiles · '+new Date().toLocaleTimeString('en-IN'));
     refreshFromServer().then(function(){
-      log('INFO','c-prompt','Loaded the latest hourly server sync');
       return Promise.all(ORDER.map(syncOne));
     }).then(function(res){
       var live = res.filter(function(r){ return r === true; }).length;
       var fromServer = res.filter(function(r){ return r === 'synced'; }).length;
       synced = true; renderAll();
-      log('DONE','c-prompt', live+' live, '+fromServer+' from server sync, '+(ORDER.length-live-fromServer)+' unavailable');
+      log('DONE','c-prompt', (live+fromServer === ORDER.length ? 'All '+ORDER.length+' platforms up to date' : (live+fromServer)+' of '+ORDER.length+' platforms up to date')
+        + ' ('+live+' live, '+fromServer+' from the server check)');
       var t = esc(new Date().toLocaleTimeString('en-IN'));
       metaEl.innerHTML = live === ORDER.length ? 'All platforms <b>live</b> · '+t
         : live + fromServer === ORDER.length ? 'All platforms <b>up to date</b> · '+t
@@ -1041,7 +1054,7 @@
     .then(function(){
       var have = ORDER.filter(function(k){ return state[k].data; }).length;
       if(have === 0){ update(); }  // nothing saved yet: fetch live straight away
-      else metaEl.innerHTML = 'Synced hourly · refresh for live numbers';
+      else metaEl.innerHTML = 'Synced automatically · refresh for live numbers';
     });
 
   // scroll reveals
