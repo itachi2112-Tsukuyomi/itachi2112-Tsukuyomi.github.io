@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-30T14:15:49.701Z",
+  "updatedAt": "2026-10-01T16:29:15.993Z",
   "platforms": {
     "leetcode": {
       "handle": "itachi_uchiha_2112",
@@ -7,26 +7,26 @@
       "easy": 134,
       "medium": 93,
       "hard": 0,
-      "ranking": 738539,
+      "ranking": 738996,
       "contestRating": null,
       "contests": null,
       "topPercentage": null,
       "source": "leetcode.com/graphql",
-      "fetchedAt": "2026-09-30T14:15:49.701Z"
+      "fetchedAt": "2026-10-01T16:29:15.993Z"
     },
     "gfg": {
       "handle": "chandakhq33g",
-      "solved": 11,
-      "codingScore": 22,
-      "instituteRank": 954,
+      "solved": 13,
+      "codingScore": 30,
+      "instituteRank": 870,
       "streak": 0,
       "source": "authapi.geeksforgeeks.org",
       "school": 0,
       "basic": 4,
       "easy": 5,
-      "medium": 2,
+      "medium": 4,
       "hard": 0,
-      "fetchedAt": "2026-09-29T18:40:27.927Z"
+      "fetchedAt": "2026-10-01T16:29:15.993Z"
     },
     "hackerrank": {
       "handle": "chandakhitesh77",
