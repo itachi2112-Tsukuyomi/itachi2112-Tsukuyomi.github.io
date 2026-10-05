@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-05T16:06:20.083Z",
+  "updatedAt": "2026-10-05T22:42:11.121Z",
   "platforms": {
     "leetcode": {
       "handle": "itachi_uchiha_2112",
@@ -16,17 +16,17 @@
     },
     "gfg": {
       "handle": "chandakhq33g",
-      "solved": 22,
-      "codingScore": 70,
-      "instituteRank": 631,
+      "solved": 23,
+      "codingScore": 74,
+      "instituteRank": 623,
       "streak": 0,
       "source": "authapi.geeksforgeeks.org",
       "school": 0,
       "basic": 4,
       "easy": 6,
-      "medium": 11,
+      "medium": 12,
       "hard": 1,
-      "fetchedAt": "2026-10-05T16:06:20.083Z"
+      "fetchedAt": "2026-10-05T22:42:11.121Z"
     },
     "hackerrank": {
       "handle": "chandakhitesh77",
