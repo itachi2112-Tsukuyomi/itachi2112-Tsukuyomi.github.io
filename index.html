@@ -3,363 +3,511 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hitesh Chandak — Cybersecurity &amp; Cloud Security</title>
-<meta name="description" content="Hitesh Chandak — cybersecurity undergraduate working in digital forensics, network traffic analysis and cloud security. Projects, CTF results and certifications.">
+<title>Hitesh Chandak — Backend Developer</title>
+<meta name="description" content="Hitesh Chandak — backend developer building REST APIs with Python, FastAPI and AWS. Projects, experience and live LeetCode, GeeksforGeeks and HackerRank stats.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+  // Apply a saved theme before first paint to avoid a flash.
+  try{ var t = localStorage.getItem('sde-theme'); if(t) document.documentElement.setAttribute('data-theme', t); }catch(e){}
+</script>
 <style>
   :root{
-    --bg:#080B10;
-    --panel:#0E131B;
-    --panel-2:#121926;
-    --line:#1B2432;
-    --text:#C9D4E2;
-    --dim:#8494A8;
-    --muted:#5B6B80;
-    --accent:#4CC2FF;
-    --ok:#7CE38B;
-    --alert:#FF6B5B;
-    --amber:#F2C14E;
-    --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
-    --sans:'IBM Plex Sans',system-ui,-apple-system,sans-serif;
-    --wrap:1080px;
+    --bg:#F6F5F1;
+    --surface:#FFFFFF;
+    --surface-2:#F1EFEA;
+    --text:#1A1C21;
+    --dim:#4B5160;
+    --muted:#7C8290;
+    --line:#E4E1D9;
+    --accent:#2F5BEA;
+    --accent-ink:#FFFFFF;
+    --accent-soft:#E8EEFF;
+    --ok:#11875D;
+    --warn:#B7791F;
+    --bad:#D14343;
+    --d-school:#9AA3B2;
+    --d-basic:#4C7DF0;
+    --d-easy:#16A394;
+    --d-medium:#E3A008;
+    --d-hard:#E5484D;
+    --shadow:0 1px 2px rgba(20,22,28,.04), 0 8px 24px -12px rgba(20,22,28,.12);
+    --sans:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+    --wrap:1100px;
+    color-scheme:light;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#0E1014; --surface:#161920; --surface-2:#1C2029; --text:#ECEEF2; --dim:#B3B9C5; --muted:#858B97;
+      --line:#262A34; --accent:#7C9BFF; --accent-ink:#0E1014; --accent-soft:rgba(124,155,255,.14);
+      --ok:#3DD68C; --warn:#F0B429; --bad:#FF6B6B;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px -14px rgba(0,0,0,.6);
+      color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0E1014; --surface:#161920; --surface-2:#1C2029; --text:#ECEEF2; --dim:#B3B9C5; --muted:#858B97;
+    --line:#262A34; --accent:#7C9BFF; --accent-ink:#0E1014; --accent-soft:rgba(124,155,255,.14);
+    --ok:#3DD68C; --warn:#F0B429; --bad:#FF6B6B;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px -14px rgba(0,0,0,.6);
+    color-scheme:dark;
   }
 
   *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
+  html{scroll-behavior:smooth;scroll-padding-top:76px}
   body{
-    margin:0;
-    background:var(--bg);
-    color:var(--text);
-    font-family:var(--sans);
-    font-size:16px;
-    line-height:1.65;
+    margin:0;background:var(--bg);color:var(--text);
+    font-family:var(--sans);font-size:16px;line-height:1.65;
     -webkit-font-smoothing:antialiased;
-    background-image:
-      radial-gradient(900px 500px at 15% -10%, rgba(76,194,255,.07), transparent 70%),
-      radial-gradient(700px 400px at 95% 5%, rgba(124,227,139,.05), transparent 70%);
-    background-attachment:fixed;
+    font-variant-numeric:tabular-nums;
   }
   a{color:inherit}
-  ::selection{background:rgba(76,194,255,.28)}
-
+  ::selection{background:var(--accent-soft)}
   .wrap{width:100%;max-width:var(--wrap);margin:0 auto;padding:0 24px}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
 
-  /* ---------- status bar ---------- */
-  .statusbar{
+  /* ---------- nav ---------- */
+  .nav{
     position:sticky;top:0;z-index:50;
-    background:rgba(8,11,16,.82);
-    backdrop-filter:blur(10px);
+    background:color-mix(in srgb, var(--bg) 85%, transparent);
+    backdrop-filter:saturate(1.4) blur(12px);
     border-bottom:1px solid var(--line);
-    font-family:var(--mono);
-    font-size:12px;
   }
-  .statusbar .wrap{display:flex;align-items:center;gap:18px;height:46px}
-  .host{color:var(--ok);white-space:nowrap;font-weight:500}
-  .host .at{color:var(--muted)}
-  .pulse{
-    display:inline-block;width:7px;height:7px;border-radius:50%;
-    background:var(--ok);margin-right:8px;vertical-align:1px;
-    box-shadow:0 0 0 0 rgba(124,227,139,.55);
-    animation:pulse 2.4s ease-out infinite;
+  .nav .wrap{display:flex;align-items:center;gap:20px;height:64px}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:700;letter-spacing:-.01em;white-space:nowrap}
+  .mono{
+    display:grid;place-items:center;width:34px;height:34px;border-radius:10px;
+    background:var(--accent);color:var(--accent-ink);font-size:13px;font-weight:800;letter-spacing:.02em;
   }
-  @keyframes pulse{
-    0%{box-shadow:0 0 0 0 rgba(124,227,139,.5)}
-    70%{box-shadow:0 0 0 7px rgba(124,227,139,0)}
-    100%{box-shadow:0 0 0 0 rgba(124,227,139,0)}
+  .nav nav{margin-left:auto;display:flex;align-items:center;gap:2px;overflow-x:auto;scrollbar-width:none}
+  .nav nav::-webkit-scrollbar{display:none}
+  .nav nav a{
+    color:var(--dim);text-decoration:none;font-size:14px;font-weight:500;
+    padding:7px 11px;border-radius:8px;white-space:nowrap;transition:background .15s,color .15s;
   }
-  nav{margin-left:auto;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
-  nav::-webkit-scrollbar{display:none}
-  nav a{
-    color:var(--muted);text-decoration:none;padding:5px 9px;border-radius:4px;
-    white-space:nowrap;transition:color .15s,background .15s;
+  .nav nav a:hover{background:var(--surface-2);color:var(--text)}
+  .icon-btn{
+    flex:none;display:grid;place-items:center;width:36px;height:36px;border-radius:9px;
+    border:1px solid var(--line);background:var(--surface);color:var(--dim);cursor:pointer;
   }
-  nav a:hover,nav a:focus-visible{color:var(--accent);background:rgba(76,194,255,.09)}
+  .icon-btn:hover{color:var(--text)}
+  .icon-btn svg{width:17px;height:17px}
+
+  /* ---------- buttons ---------- */
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    font:600 14px/1 var(--sans);padding:12px 18px;border-radius:10px;
+    text-decoration:none;cursor:pointer;border:1px solid transparent;
+    transition:transform .15s,background .15s,border-color .15s,box-shadow .15s;
+  }
+  .btn svg{width:16px;height:16px}
+  .btn.primary{background:var(--accent);color:var(--accent-ink);box-shadow:0 6px 16px -8px var(--accent)}
+  .btn.primary:hover{transform:translateY(-1px)}
+  .btn.ghost{background:var(--surface);color:var(--text);border-color:var(--line)}
+  .btn.ghost:hover{border-color:var(--muted)}
+  .btn:disabled{cursor:progress;opacity:.75;transform:none}
+  .btn .ico{display:inline-block}
+  .btn.busy .ico{animation:spin .9s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
 
   /* ---------- hero ---------- */
-  header{padding:74px 0 30px}
-  .eyebrow{
-    font-family:var(--mono);font-size:12px;letter-spacing:.16em;
-    text-transform:uppercase;color:var(--muted);margin-bottom:20px;
-  }
-  .eyebrow b{color:var(--accent);font-weight:500}
-  h1{
-    font-family:var(--mono);font-weight:800;
-    font-size:clamp(2.4rem,8.5vw,5rem);
-    line-height:.96;letter-spacing:-.035em;
-    margin:0 0 18px;color:#EAF1F8;
-  }
-  h1 .cursor{
-    color:var(--ok);font-weight:400;
-    animation:blink 1.1s steps(1) infinite;
-  }
-  @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
-  .tagline{
-    font-size:clamp(1rem,2.4vw,1.2rem);color:var(--dim);
-    max-width:56ch;margin:0 0 26px;
-  }
-  .tagline em{color:var(--text);font-style:normal;font-weight:600}
-  .links{display:flex;flex-wrap:wrap;gap:10px;font-family:var(--mono);font-size:13px}
-  .links a{
+  .hero{padding:72px 0 64px}
+  .hero .wrap{display:grid;grid-template-columns:1.25fr 1fr;gap:48px;align-items:center}
+  .pill{
     display:inline-flex;align-items:center;gap:8px;
-    padding:9px 14px;border:1px solid var(--line);border-radius:6px;
-    background:var(--panel);text-decoration:none;color:var(--dim);
-    transition:border-color .15s,color .15s,transform .15s;
+    font-size:13px;font-weight:600;color:var(--dim);
+    background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 12px 6px 10px;
   }
-  .links a:hover,.links a:focus-visible{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
-  .links a .k{color:var(--muted)}
+  .pill .dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px color-mix(in srgb, var(--ok) 20%, transparent)}
+  h1{
+    font-size:clamp(2.6rem,6.5vw,4.4rem);line-height:1.02;letter-spacing:-.035em;
+    font-weight:800;margin:20px 0 10px;
+  }
+  .role{font-size:clamp(1.1rem,2.4vw,1.35rem);font-weight:600;color:var(--accent);margin:0 0 18px;letter-spacing:-.01em}
+  .lede{font-size:1.06rem;color:var(--dim);max-width:54ch;margin:0 0 28px}
+  .lede b{color:var(--text);font-weight:600}
+  .cta{display:flex;flex-wrap:wrap;gap:10px}
+  .meta-row{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:26px;font-size:13.5px;color:var(--muted)}
+  .meta-row span{display:inline-flex;align-items:center;gap:6px}
+  .meta-row svg{width:15px;height:15px}
 
-  /* ---------- terminal ---------- */
-  .term{
-    margin:38px 0 10px;
-    background:var(--panel);
-    border:1px solid var(--line);
-    border-radius:10px;
-    overflow:hidden;
-    box-shadow:0 24px 60px -30px rgba(0,0,0,.9);
+  .glance{
+    background:var(--surface);border:1px solid var(--line);border-radius:18px;
+    padding:26px;box-shadow:var(--shadow);
   }
-  .term-bar{
-    display:flex;align-items:center;gap:8px;
-    padding:10px 14px;border-bottom:1px solid var(--line);
-    background:var(--panel-2);
-    font-family:var(--mono);font-size:11.5px;color:var(--muted);
-  }
-  .dot{width:10px;height:10px;border-radius:50%;flex:none}
-  .term-title{margin-left:8px;letter-spacing:.04em}
-  .term-body{
-    padding:20px 18px 24px;
-    font-family:var(--mono);
-    font-size:13px;line-height:1.95;
-    overflow-x:auto;
-  }
-  .term-body .line{white-space:pre;display:block;opacity:0}
-  .term-body .line.show{opacity:1}
-  .c-prompt{color:var(--accent)}
-  .c-user{color:var(--ok)}
-  .c-dim{color:var(--muted)}
-  .c-ok{color:var(--ok)}
-  .c-amber{color:var(--amber)}
-  .port-row{
-    display:block;text-decoration:none;color:var(--dim);
-    border-radius:4px;padding:0 4px;margin:0 -4px;
-    transition:background .14s,color .14s;
-  }
-  .port-row:hover,.port-row:focus-visible{background:rgba(76,194,255,.1);color:#EAF1F8;outline:none}
-  .port-row:hover .svc,.port-row:focus-visible .svc{color:var(--accent)}
-  .svc{color:var(--text);transition:color .14s}
-  .caret{color:var(--ok);animation:blink 1.1s steps(1) infinite}
+  .glance .lbl{font-size:12.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+  .glance .big{font-size:3.2rem;font-weight:800;letter-spacing:-.04em;line-height:1;margin:10px 0 4px}
+  .glance .sub{font-size:14px;color:var(--dim);margin-bottom:20px}
+  .g-row{display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
+  .g-row .name{font-weight:600;font-size:14.5px}
+  .g-row .n{font-weight:700;font-size:15px}
+  .g-row .track{grid-column:1 / -1;height:6px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+  .g-row .track i{display:block;height:100%;border-radius:99px;background:var(--accent);transition:width .6s ease}
+  .glance .more{display:inline-flex;margin-top:14px;font-size:14px;font-weight:600;color:var(--accent);text-decoration:none}
+  .glance .more:hover{text-decoration:underline}
 
   /* ---------- sections ---------- */
-  section{padding:64px 0;border-top:1px solid var(--line)}
-  .sec-head{font-family:var(--mono);font-size:13px;margin-bottom:34px;line-height:1.7}
-  .sec-head .p1{display:block;color:var(--muted)}
-  .sec-head .p1 .u{color:var(--ok)}
-  .sec-head .p1 .path{color:var(--accent)}
-  .sec-head .p2{display:block;color:var(--muted)}
-  .sec-head .p2 .cmd{color:var(--text)}
-  h2{
-    font-family:var(--mono);font-weight:700;
-    font-size:clamp(1.5rem,4vw,2.1rem);letter-spacing:-.02em;
-    margin:14px 0 0;color:#EAF1F8;
-  }
-
-  .grid{display:grid;gap:18px}
-  .two{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+  section{padding:80px 0;border-top:1px solid var(--line)}
+  .eyebrow{font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin:0 0 10px}
+  h2{font-size:clamp(1.7rem,3.6vw,2.3rem);font-weight:800;letter-spacing:-.03em;line-height:1.15;margin:0 0 12px}
+  .sec-lede{color:var(--dim);max-width:62ch;margin:0 0 36px}
+  .head-row{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 24px;margin-bottom:28px}
+  .head-row .sec-lede{margin:0}
 
   .card{
-    background:var(--panel);border:1px solid var(--line);
-    border-radius:10px;padding:24px;
-    transition:border-color .18s,transform .18s;
+    background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:26px;
+    box-shadow:var(--shadow);
   }
-  .card:hover{border-color:#2C3A4D;transform:translateY(-3px)}
-  .card h3{
-    font-family:var(--mono);font-size:1.02rem;font-weight:700;
-    margin:0 0 6px;color:#EAF1F8;letter-spacing:-.01em;
-  }
-  .card .meta{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-bottom:14px;letter-spacing:.04em}
-  .card ul{margin:0;padding-left:0;list-style:none}
-  .card ul li{position:relative;padding-left:20px;margin-bottom:9px;font-size:14.5px;color:var(--dim)}
-  .card ul li:last-child{margin-bottom:0}
-  .card ul li::before{
-    content:'▸';position:absolute;left:0;top:0;
-    color:var(--accent);font-family:var(--mono);font-size:12px;
-  }
-  .repo{
-    display:inline-flex;align-items:center;gap:7px;margin-top:16px;
-    font-family:var(--mono);font-size:12px;color:var(--muted);
-    text-decoration:none;border-bottom:1px solid transparent;transition:color .15s,border-color .15s;
-  }
-  .repo:hover,.repo:focus-visible{color:var(--accent);border-color:var(--accent)}
-
-  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px}
-  .tag{
-    font-family:var(--mono);font-size:11px;padding:3px 9px;
-    border:1px solid var(--line);border-radius:20px;color:var(--muted);
-    background:var(--panel-2);
-  }
+  .grid{display:grid;gap:20px}
+  .two{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+  .three{grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr))}
 
   /* about */
-  .about{display:grid;grid-template-columns:1.4fr 1fr;gap:34px;align-items:start}
-  .about p{margin:0 0 16px;color:var(--dim);font-size:15.5px}
-  .about p strong{color:var(--text);font-weight:600}
-  .facts{border-left:2px solid var(--line);padding-left:20px}
-  .fact{margin-bottom:20px}
-  .fact:last-child{margin-bottom:0}
-  .fact .k{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px}
-  .fact .v{font-size:14.5px;color:var(--text)}
-  .fact .v small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
-
-  /* skills */
-  .skillrow{
-    display:grid;grid-template-columns:190px 1fr;gap:20px;
-    padding:20px 0;border-bottom:1px solid var(--line);align-items:start;
-  }
-  .skillrow:last-child{border-bottom:none}
-  .skillrow .label{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.06em;padding-top:3px}
+  .about{display:grid;grid-template-columns:1.3fr 1fr;gap:28px;align-items:start}
+  .about p{color:var(--dim);margin:0 0 16px;font-size:16px}
+  .about p b{color:var(--text);font-weight:600}
+  .edu h3{font-size:1.05rem;font-weight:700;margin:0 0 4px;letter-spacing:-.01em}
+  .edu .sub{font-size:14px;color:var(--dim)}
+  .edu .when{font-size:13px;color:var(--muted);margin:2px 0 16px}
+  .facts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+  .fact{background:var(--surface-2);border-radius:12px;padding:14px 16px}
+  .fact .k{display:block;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+  .fact .v{display:block;font-size:1.35rem;font-weight:800;letter-spacing:-.02em;margin-top:2px}
   .chips{display:flex;flex-wrap:wrap;gap:8px}
-  .chip{
-    font-family:var(--mono);font-size:12.5px;padding:5px 11px;
-    background:var(--panel);border:1px solid var(--line);border-radius:5px;color:var(--dim);
-  }
+  .chip{font-size:13px;font-weight:500;padding:6px 12px;border-radius:999px;background:var(--surface-2);color:var(--dim);border:1px solid var(--line)}
+  .mini-h{font-size:12.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin:0 0 10px}
 
-  /* ctf */
-  .ctf-item{
-    display:flex;gap:18px;align-items:baseline;
-    padding:18px 0;border-bottom:1px solid var(--line);
+  /* ---------- stats ---------- */
+  .sync{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px}
+  .sync-meta{font-size:13.5px;color:var(--muted)}
+  .sync-meta b{color:var(--text);font-weight:600}
+  .total{
+    display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 18px;
+    padding:20px 26px;margin-bottom:20px;
   }
-  .ctf-item:last-child{border-bottom:none}
-  .rank{
-    font-family:var(--mono);font-weight:800;font-size:1.05rem;
-    color:var(--amber);flex:none;min-width:92px;
-  }
-  .rank.plain{color:var(--muted);font-weight:500;font-size:12px}
-  .ctf-item .body h4{margin:0 0 3px;font-size:15.5px;font-family:var(--mono);font-weight:700;color:#EAF1F8}
-  .ctf-item .body p{margin:0;color:var(--muted);font-size:14px}
+  .total .big{font-size:2.4rem;font-weight:800;letter-spacing:-.04em;line-height:1}
+  .total .lbl{font-size:14px;font-weight:600;color:var(--muted)}
+  .total .split{margin-left:auto;display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14px;color:var(--dim)}
+  .total .split b{color:var(--text)}
 
-  /* certs */
-  .certs{display:grid;gap:12px}
-  .cert{
-    display:flex;align-items:center;gap:14px;
-    background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px 18px;
+  .pcard{display:flex;flex-direction:column}
+  .pcard .top{display:flex;align-items:center;gap:10px}
+  .pcard .top h3{margin:0;font-size:1.05rem;font-weight:700;letter-spacing:-.01em}
+  .badge{
+    margin-left:auto;font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px;white-space:nowrap;
+    background:var(--surface-2);color:var(--muted);
   }
-  .cert .sig{font-family:var(--mono);font-size:11px;color:var(--ok);flex:none}
-  .cert .name{font-size:15px;color:var(--text)}
-  .cert .issuer{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-left:auto;text-align:right}
+  .badge.live{background:color-mix(in srgb, var(--ok) 14%, transparent);color:var(--ok)}
+  .badge.synced{background:color-mix(in srgb, var(--ok) 10%, transparent);color:var(--ok)}
+  .badge.cached{background:color-mix(in srgb, var(--warn) 16%, transparent);color:var(--warn)}
+  .badge.none{background:color-mix(in srgb, var(--bad) 12%, transparent);color:var(--bad)}
+  .pcard .handle{font-size:13.5px;color:var(--muted);text-decoration:none;margin-top:2px;width:fit-content}
+  .pcard .handle:hover{color:var(--accent)}
+  .solved{margin:20px 0 2px}
+  .solved .n{font-size:2.7rem;font-weight:800;letter-spacing:-.04em;line-height:1}
+  .solved .u{font-size:14px;font-weight:600;color:var(--muted);margin-left:8px}
+  .bar{display:flex;gap:3px;height:8px;border-radius:99px;overflow:hidden;background:var(--surface-2);margin:16px 0 12px}
+  .bar i{display:block;height:100%}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--dim)}
+  .legend span{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;text-transform:capitalize}
+  .legend i{width:8px;height:8px;border-radius:50%;display:inline-block}
+  .legend b{color:var(--text);font-weight:600}
+  .kv{margin-top:18px;border-top:1px solid var(--line);padding-top:14px;display:grid;gap:8px}
+  .kv div{display:flex;justify-content:space-between;gap:12px;font-size:14px}
+  .kv .k{color:var(--muted)}
+  .kv .v{color:var(--text);font-weight:600;text-align:right}
+  .hr-badges{display:grid;gap:8px;margin-top:10px}
+  .hr-badges div{display:flex;justify-content:space-between;gap:10px;font-size:14px;color:var(--dim)}
+  .stars{color:var(--d-medium);letter-spacing:1px;white-space:nowrap}
+  .stars .off{color:var(--line)}
+  .empty{color:var(--muted);font-size:14px;margin:12px 0 0}
 
-  /* footer */
-  footer{border-top:1px solid var(--line);padding:60px 0 70px}
-  .contact-line{font-family:var(--mono);font-size:13px;color:var(--muted);margin-bottom:22px}
-  .contact-line .c-ok{color:var(--ok)}
-  .contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:38px}
-  .contact-grid a{
-    display:block;padding:16px 18px;background:var(--panel);
-    border:1px solid var(--line);border-radius:8px;text-decoration:none;
-    transition:border-color .16s,transform .16s;
+  .sync-details{margin-top:16px;font-size:13.5px;color:var(--muted)}
+  .sync-details summary{cursor:pointer;width:fit-content;font-weight:600}
+  .sync-details summary:hover{color:var(--text)}
+  .synclog{margin-top:10px;display:grid;gap:4px;padding:14px 16px;border-radius:12px;background:var(--surface);border:1px solid var(--line);max-height:220px;overflow:auto}
+  .synclog div{display:flex;gap:10px;color:var(--dim);word-break:break-word}
+  .synclog .ic{flex:none;width:16px;text-align:center;font-weight:700}
+  .synclog .c-ok{color:var(--ok)}
+  .synclog .c-amber{color:var(--warn)}
+  .synclog .c-alert{color:var(--bad)}
+  .synclog .c-prompt{color:var(--muted)}
+
+  /* ---------- projects ---------- */
+  .project{display:flex;flex-direction:column}
+  .project .ptop{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px}
+  .project h3{font-size:1.12rem;font-weight:700;letter-spacing:-.015em;margin:0;line-height:1.35}
+  .project .kind{font-size:13px;color:var(--muted);margin-bottom:14px}
+  .tagline-stat{
+    flex:none;font-size:12.5px;font-weight:700;padding:4px 10px;border-radius:999px;
+    background:var(--accent-soft);color:var(--accent);white-space:nowrap;
   }
-  .contact-grid a:hover,.contact-grid a:focus-visible{border-color:var(--accent);transform:translateY(-2px)}
-  .contact-grid .k{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
-  .contact-grid .v{font-family:var(--mono);font-size:14px;color:var(--text);word-break:break-all}
-  .colophon{font-family:var(--mono);font-size:11.5px;color:var(--muted);line-height:1.9}
+  .project ul{margin:0 0 18px;padding:0;list-style:none;display:grid;gap:9px}
+  .project li{position:relative;padding-left:18px;font-size:14.5px;color:var(--dim)}
+  .project li::before{content:'';position:absolute;left:2px;top:.62em;width:6px;height:6px;border-radius:50%;background:var(--accent);opacity:.7}
+  .project li b{color:var(--text);font-weight:600}
+  .stack{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto}
+  .stack span{font-size:12px;font-weight:600;padding:4px 10px;border-radius:7px;background:var(--surface-2);color:var(--dim)}
+  .plink{display:inline-flex;align-items:center;gap:6px;margin-top:16px;font-size:14px;font-weight:600;color:var(--accent);text-decoration:none;width:fit-content}
+  .plink:hover{text-decoration:underline}
+  .plink.soon{color:var(--muted);font-weight:500;pointer-events:none}
 
-  /* reveal */
-  .reveal{opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease}
+  /* ---------- experience ---------- */
+  .xp{display:grid;grid-template-columns:200px 1fr;gap:24px}
+  .xp .when{font-size:14px;font-weight:600;color:var(--muted)}
+  .xp .where{font-size:13.5px;color:var(--muted);margin-top:2px}
+  .xp h3{margin:0 0 4px;font-size:1.12rem;font-weight:700;letter-spacing:-.015em}
+  .xp .org{color:var(--accent);font-weight:600;font-size:14.5px;margin-bottom:12px}
+  .xp ul{margin:0;padding:0;list-style:none;display:grid;gap:9px}
+  .xp li{position:relative;padding-left:18px;font-size:14.5px;color:var(--dim)}
+  .xp li::before{content:'';position:absolute;left:2px;top:.62em;width:6px;height:6px;border-radius:50%;background:var(--accent);opacity:.7}
+  .xp li b{color:var(--text);font-weight:600}
+
+  /* ---------- skills ---------- */
+  .skills{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px}
+  .skills .card h3{font-size:1rem;font-weight:700;margin:0 0 14px;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
+  .skills .card h3 .sq{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent)}
+  .skills .card h3 .sq svg{width:16px;height:16px}
+
+  /* ---------- achievements ---------- */
+  .ach{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:20px}
+  .ach .card .num{font-size:2rem;font-weight:800;letter-spacing:-.03em;line-height:1.05;color:var(--accent)}
+  .ach .card h3{font-size:1rem;font-weight:700;margin:8px 0 6px}
+  .ach .card p{margin:0;font-size:14px;color:var(--dim)}
+  .certs{margin-top:20px}
+  .certs ul{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:10px 24px}
+  .certs li{display:flex;align-items:center;gap:10px;font-size:14.5px;color:var(--dim);padding:6px 0}
+  .certs li svg{flex:none;width:18px;height:18px;color:var(--ok)}
+
+  /* ---------- contact ---------- */
+  footer{padding:80px 0 56px;border-top:1px solid var(--line)}
+  .contact{
+    background:var(--text);color:var(--bg);border-radius:22px;padding:44px;
+    display:grid;grid-template-columns:1.2fr 1fr;gap:32px;align-items:center;
+  }
+  .contact h2{color:inherit;margin-bottom:10px}
+  .contact p{margin:0;opacity:.75;max-width:46ch}
+  .contact .links{display:grid;gap:10px}
+  .contact .links a{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:14px 18px;border-radius:12px;text-decoration:none;
+    background:color-mix(in srgb, var(--bg) 8%, transparent);
+    border:1px solid color-mix(in srgb, var(--bg) 16%, transparent);
+    transition:background .15s;
+  }
+  .contact .links a:hover{background:color-mix(in srgb, var(--bg) 16%, transparent)}
+  .contact .links .k{font-size:12.5px;opacity:.65;font-weight:600}
+  .contact .links .v{font-weight:600;font-size:14.5px;word-break:break-all;text-align:right}
+  .colophon{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;margin-top:28px;font-size:13.5px;color:var(--muted)}
+  .colophon a{color:var(--muted)}
+
+  .reveal{opacity:0;transform:translateY(12px);transition:opacity .6s ease,transform .6s ease}
   .reveal.in{opacity:1;transform:none}
 
-  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
-
-  @media (max-width:760px){
-    .about{grid-template-columns:1fr;gap:26px}
-    .skillrow{grid-template-columns:1fr;gap:10px}
-    .term-body{font-size:11px;line-height:1.9}
-    .ctf-item{flex-direction:column;gap:4px}
-    .rank{min-width:0}
-    .cert{flex-wrap:wrap}
-    .cert .issuer{margin-left:0;text-align:left;width:100%}
-    section{padding:48px 0}
-    header{padding:48px 0 20px}
+  @media (max-width:880px){
+    .hero .wrap{grid-template-columns:1fr;gap:36px}
+    .about{grid-template-columns:1fr}
+    .contact{grid-template-columns:1fr;padding:30px}
+    .xp{grid-template-columns:1fr;gap:10px}
   }
-
+  @media (max-width:640px){
+    .wrap{padding:0 16px}
+    .hero{padding:44px 0 48px}
+    section{padding:56px 0}
+    .nav nav a.opt{display:none}
+    .total .split{margin-left:0;width:100%}
+    .card{padding:22px}
+  }
   @media (prefers-reduced-motion:reduce){
     *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
     .reveal{opacity:1;transform:none}
-    .term-body .line{opacity:1}
   }
 </style>
 </head>
 <body>
 
-<div class="statusbar">
+<header class="nav">
   <div class="wrap">
-    <span class="host"><span class="pulse"></span>hitesh<span class="at">@</span>sec-ops<span class="at">:~$</span></span>
-    <nav>
-      <a href="#whoami">whoami</a>
-      <a href="#skills">skills</a>
-      <a href="#experience">experience</a>
-      <a href="#projects">projects</a>
-      <a href="#ctf">ctf</a>
-      <a href="#certs">certs</a>
-      <a href="#contact">contact</a>
-      <a href="sde.html" style="color:var(--dim);border:1px solid var(--line)">sde ↗</a>
+    <a class="brand" href="#top"><span class="mono">HC</span><span>Hitesh Chandak</span></a>
+    <nav aria-label="Sections">
+      <a class="opt" href="#about">About</a>
+      <a href="#stats">Coding stats</a>
+      <a href="#projects">Projects</a>
+      <a class="opt" href="#experience">Experience</a>
+      <a class="opt" href="#skills">Skills</a>
+      <a href="#contact">Contact</a>
     </nav>
-  </div>
-</div>
-
-<header>
-  <div class="wrap">
-    <p class="eyebrow">Nagpur, India &nbsp;·&nbsp; <b>available</b> for SOC analyst &amp; security internships</p>
-    <h1>HITESH<br>CHANDAK<span class="cursor">_</span></h1>
-    <p class="tagline">Cybersecurity undergraduate working in <em>digital forensics</em>, <em>network traffic analysis</em> and <em>cloud security</em> — mostly from the blue-team side of the table.</p>
-
-    <div class="links">
-      <a href="https://github.com/itachi2112-Tsukuyomi" target="_blank" rel="noopener"><span class="k">gh</span> itachi2112-Tsukuyomi</a>
-      <a href="https://www.linkedin.com/in/hitesh-chandak" target="_blank" rel="noopener"><span class="k">in</span> hitesh-chandak</a>
-      <a href="https://codolio.com/profile/itachi2112" target="_blank" rel="noopener"><span class="k">dsa</span> codolio/itachi2112</a>
-      <a href="mailto:chandakhitesh77@gmail.com"><span class="k">mail</span> chandakhitesh77@gmail.com</a>
-    </div>
-
-    <div class="term">
-      <div class="term-bar">
-        <span class="dot" style="background:#FF6B5B"></span>
-        <span class="dot" style="background:#F2C14E"></span>
-        <span class="dot" style="background:#7CE38B"></span>
-        <span class="term-title">hitesh@sec-ops — recon</span>
-      </div>
-      <div class="term-body" id="term" aria-label="Simulated port scan listing the sections of this site"></div>
-    </div>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Toggle dark mode">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
   </div>
 </header>
 
-<section id="whoami">
-  <div class="wrap reveal">
-    <div class="sec-head">
-      <span class="p1">┌──(<span class="u">hitesh㉿sec-ops</span>)-[<span class="path">~</span>]</span>
-      <span class="p2">└─$ <span class="cmd">whoami --verbose</span></span>
-      <h2>whoami</h2>
+<main id="top">
+<div class="hero">
+  <div class="wrap">
+    <div>
+      <span class="pill"><span class="dot"></span>Open to SDE &amp; backend roles · 2027 graduate</span>
+      <h1>Hitesh Chandak</h1>
+      <p class="role">Backend Developer · Python, FastAPI, AWS</p>
+      <p class="lede">Final-year computer engineering student building backend services with <b>Python and FastAPI</b> — REST APIs, <b>JWT / OAuth2 authentication</b> and <b>AWS automation</b> with boto3 and Terraform — with a security-first approach to API and cloud design.</p>
+      <div class="cta">
+        <a class="btn primary" href="Hitesh_Chandak_SWD.pdf" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0 5-5m-5 5-5-5M5 21h14"/></svg>Download resume</a>
+        <a class="btn ghost" href="https://github.com/itachi2112-Tsukuyomi" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.7 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5z"/></svg>GitHub</a>
+        <a class="btn ghost" href="https://www.linkedin.com/in/hitesh-chandak-750a18258" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.4 20.5h-3.6v-5.6c0-1.3 0-3-1.8-3s-2.1 1.4-2.1 2.9v5.7H9.3V9h3.4v1.6h.1c.5-.9 1.6-1.8 3.4-1.8 3.6 0 4.3 2.4 4.3 5.5v6.2zM5.3 7.4a2.1 2.1 0 1 1 0-4.1 2.1 2.1 0 0 1 0 4.1zM7.1 20.5H3.5V9h3.6v11.5zM22.2 0H1.8C.8 0 0 .8 0 1.7v20.6c0 .9.8 1.7 1.8 1.7h20.4c1 0 1.8-.8 1.8-1.7V1.7C24 .8 23.2 0 22.2 0z"/></svg>LinkedIn</a>
+      </div>
+      <div class="meta-row">
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Nagpur, India</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg>B.Tech CE · RCOEM</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>CTF All India Rank 37</span>
+      </div>
     </div>
+
+    <aside class="glance" aria-label="Coding stats at a glance">
+      <div class="lbl">Problems solved</div>
+      <div class="big" id="glance-total">—</div>
+      <div class="sub">across LeetCode, GeeksforGeeks &amp; HackerRank</div>
+      <div id="glance-rows"></div>
+      <a class="more" href="#stats">See full breakdown →</a>
+    </aside>
+  </div>
+</div>
+
+<section id="about">
+  <div class="wrap reveal">
+    <p class="eyebrow">About</p>
+    <h2>Backend services, built with security in mind</h2>
     <div class="about">
       <div>
-        <p>I'm a final-year B.Tech student at <strong>Shri Ramdeobaba College of Engineering, Nagpur</strong>, specialising in Cyber Security. Most of what I know came from breaking things in a home lab and then figuring out how the defender would have caught me.</p>
-        <p>My work sits across three areas: <strong>digital forensics</strong> — disk imaging and evidence recovery from damaged media, which I did full-time during my internship at CFT; <strong>network and log analysis</strong> — reading packet captures and traffic patterns until the anomaly stands out; and <strong>cloud security</strong> — auditing AWS misconfigurations, the S3 permission mistakes that leak data quietly.</p>
-        <p>I also design CTF challenges and run beginner workshops for my peers, because explaining an attack chain to someone else is the fastest way to find the gaps in your own understanding.</p>
+        <p>I'm a final-year <b>B.Tech Computer Engineering</b> student at Shri Ramdeobaba College of Engineering and Management, Nagpur, specialising in cyber security. Most of what I build lives on the server: <b>FastAPI</b> services with Pydantic-validated REST endpoints, token-based auth, and the <b>AWS</b> infrastructure underneath them.</p>
+        <p>My security background shapes how I design — I think about authentication flows, least-privilege IAM and what an attacker would see <i>before</i> I ship, not after. It's also why I spend time in CTFs, where I've placed <b>All India Rank 37</b>.</p>
+        <p>I keep my fundamentals sharp with daily problem solving — arrays, hashing, trees, graphs and dynamic programming — tracked live below.</p>
       </div>
-      <div class="facts">
-        <div class="fact">
-          <span class="k">Education</span>
-          <span class="v">B.Tech Computer Engineering (Cyber Security)<small>RCOEM Nagpur · Aug 2023 – Present · SGPA 8.5</small></span>
+      <div class="card edu">
+        <p class="mini-h">Education</p>
+        <h3>Shri Ramdeobaba College of Engineering and Management</h3>
+        <div class="sub">B.Tech in Computer Engineering (Cyber Security)</div>
+        <div class="when">Aug 2023 – 2027 (expected) · Nagpur</div>
+        <div class="facts">
+          <div class="fact"><span class="k">CGPA</span><span class="v">7.58<small style="font-size:.8rem;color:var(--muted);font-weight:600">/10</small></span></div>
+          <div class="fact"><span class="k">Solved</span><span class="v" id="fact-total">—</span></div>
         </div>
-        <div class="fact">
-          <span class="k">Best CTF finish</span>
-          <span class="v">All India Rank 37<small>REDFOX CTF</small></span>
+        <p class="mini-h">Coursework</p>
+        <div class="chips">
+          <span class="chip">Data Structures &amp; Algorithms</span><span class="chip">OOP</span><span class="chip">DBMS</span><span class="chip">Operating Systems</span><span class="chip">Computer Networks</span>
         </div>
-        <div class="fact">
-          <span class="k">Currently</span>
-          <span class="v">OSCP preparation<small>Plus AWS Cloud Practitioner and daily DSA practice</small></span>
-        </div>
-        <div class="fact">
-          <span class="k">Languages</span>
-          <span class="v">English (professional)<small>Hindi (native)</small></span>
-        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="stats">
+  <div class="wrap reveal">
+    <div class="head-row">
+      <div>
+        <p class="eyebrow">Coding profiles</p>
+        <h2>Problem solving, live</h2>
+        <p class="sec-lede">Pulled straight from my profiles. Hit refresh to fetch the latest numbers.</p>
+      </div>
+      <div class="sync">
+        <button class="btn primary" id="sync-btn" type="button"><span class="ico" aria-hidden="true">↻</span><span class="txt">Refresh stats</span></button>
+        <span class="sync-meta" id="sync-meta" aria-live="polite">Loading saved stats…</span>
+      </div>
+    </div>
+
+    <div class="card total">
+      <span class="big" id="total-n">—</span>
+      <span class="lbl">problems solved in total</span>
+      <span class="split" id="total-split"></span>
+    </div>
+
+    <div class="grid three" id="cards"></div>
+
+    <details class="sync-details">
+      <summary>Sync details</summary>
+      <div class="synclog" id="synclog" aria-live="polite"></div>
+    </details>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="wrap reveal">
+    <p class="eyebrow">Projects</p>
+    <h2>Things I've built</h2>
+    <p class="sec-lede">APIs, cloud automation and a bit of machine learning — each one shipped end to end.</p>
+    <div class="grid two">
+
+      <article class="card project">
+        <div class="ptop"><h3>CloudTrap — AWS Honeypot &amp; Attack Detection Platform</h3><span class="tagline-stat">Team project</span></div>
+        <div class="kind">Final-year project · FastAPI backend</div>
+        <ul>
+          <li>Co-developing a platform that detects exposed AWS resources, deploys realistic decoys beside them, and alerts on attacker interaction.</li>
+          <li>Built a <b>boto3 scanner covering 6 AWS services</b> with snapshot-and-diff change detection.</li>
+          <li>Automated decoy deployment, including deny-all honeytoken IAM keys, with <b>Terraform</b>, and correlated <b>CloudTrail</b> logs to capture attacker activity.</li>
+          <li>Generates MITRE ATT&amp;CK-mapped incident reports via the Claude API, served through a <b>FastAPI REST backend</b>; validated end to end with a scripted attack simulation on live AWS.</li>
+        </ul>
+        <div class="stack"><span>Python</span><span>FastAPI</span><span>boto3</span><span>CloudTrail</span><span>IAM</span><span>Terraform</span><span>SQLite</span></div>
+        <span class="plink soon">Code coming soon</span>
+      </article>
+
+      <article class="card project">
+        <div class="ptop"><h3>SecureAuth API — User Authentication &amp; Management</h3><span class="tagline-stat">REST API</span></div>
+        <div class="kind">Authentication service</div>
+        <ul>
+          <li>RESTful CRUD endpoints in <b>FastAPI</b> with Pydantic request/response validation and auto-generated <b>Swagger</b> docs.</li>
+          <li>Secured routes with the <b>OAuth2 password flow and JWT access tokens</b> — creation, verification and expiry.</li>
+          <li>Secrets managed through environment-based configuration.</li>
+        </ul>
+        <div class="stack"><span>Python</span><span>FastAPI</span><span>Pydantic</span><span>JWT</span><span>OAuth2</span></div>
+        <span class="plink soon">Code coming soon</span>
+      </article>
+
+      <article class="card project">
+        <div class="ptop"><h3>Phishing Link Analyzer</h3><span class="tagline-stat">88.32% accuracy</span></div>
+        <div class="kind">Deep learning · real-time traffic</div>
+        <ul>
+          <li>Trained a <b>PyTorch 1D-CNN</b> to classify phishing URLs on <b>2,100+ URLs</b> from PhishTank and OpenPhish, served through an interactive Streamlit dashboard.</li>
+          <li>Live packet capture with <b>Pyshark</b> inspects DNS/HTTP traffic, scores domain risk in real time and triggers automated alerts.</li>
+        </ul>
+        <div class="stack"><span>Python</span><span>PyTorch</span><span>Streamlit</span><span>Pyshark</span></div>
+        <a class="plink" href="https://github.com/itachi2112-Tsukuyomi?tab=repositories" target="_blank" rel="noopener">View on GitHub →</a>
+      </article>
+
+      <article class="card project">
+        <div class="ptop"><h3>S3 Bucket Security Scanner</h3><span class="tagline-stat">CLI tool</span></div>
+        <div class="kind">Cloud automation</div>
+        <ul>
+          <li>A <b>boto3</b>-based scanner that finds public and misconfigured S3 buckets by checking anonymous access, ACLs and bucket policies.</li>
+          <li>Generates <b>severity-ranked reports</b> so the riskiest buckets surface first.</li>
+        </ul>
+        <div class="stack"><span>Python</span><span>boto3</span><span>AWS S3</span></div>
+        <a class="plink" href="https://github.com/itachi2112-Tsukuyomi?tab=repositories" target="_blank" rel="noopener">View on GitHub →</a>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="wrap reveal">
+    <p class="eyebrow">Experience</p>
+    <h2>Where I've worked</h2>
+    <div class="card xp" style="margin-top:28px">
+      <div>
+        <div class="when">June 2025 – July 2025</div>
+        <div class="where">Nagpur, India</div>
+      </div>
+      <div>
+        <h3>Digital Forensics Intern</h3>
+        <div class="org">Crypto Forensic and Technology (CFT)</div>
+        <ul>
+          <li>Performed forensic acquisition and analysis of compromised storage media using <b>Autopsy</b> and <b>FTK Imager</b>, recovering deleted artifacts under chain-of-custody procedures.</li>
+          <li>Documented findings in structured case reports identifying indicators of malicious activity.</li>
+        </ul>
       </div>
     </div>
   </div>
@@ -367,276 +515,552 @@
 
 <section id="skills">
   <div class="wrap reveal">
-    <div class="sec-head">
-      <span class="p1">┌──(<span class="u">hitesh㉿sec-ops</span>)-[<span class="path">~/toolkit</span>]</span>
-      <span class="p2">└─$ <span class="cmd">ls -1 --group</span></span>
-      <h2>skills</h2>
-    </div>
-
-    <div class="skillrow">
-      <span class="label">security/</span>
-      <div class="chips">
-        <span class="chip">Digital Forensics</span>
-        <span class="chip">Incident Response</span>
-        <span class="chip">Network Traffic Analysis</span>
-        <span class="chip">Log Analysis</span>
-        <span class="chip">OSINT</span>
-        <span class="chip">Email Security</span>
-        <span class="chip">Threat Analysis</span>
+    <p class="eyebrow">Skills</p>
+    <h2>My toolkit</h2>
+    <p class="sec-lede">What I reach for when building and shipping backend services.</p>
+    <div class="skills">
+      <div class="card">
+        <h3><span class="sq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 6-6 6 6 6M16 6l6 6-6 6"/></svg></span>Languages</h3>
+        <div class="chips"><span class="chip">Python</span><span class="chip">SQL</span><span class="chip">Bash</span></div>
       </div>
-    </div>
-    <div class="skillrow">
-      <span class="label">tools/</span>
-      <div class="chips">
-        <span class="chip">Nmap</span>
-        <span class="chip">Wireshark</span>
-        <span class="chip">Autopsy</span>
-        <span class="chip">Burp Suite</span>
-        <span class="chip">Hashcat</span>
-        <span class="chip">John the Ripper</span>
-        <span class="chip">Metasploit</span>
-        <span class="chip">Kali Linux</span>
+      <div class="card">
+        <h3><span class="sq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><path d="M7 7h.01M7 17h.01"/></svg></span>Backend</h3>
+        <div class="chips"><span class="chip">FastAPI</span><span class="chip">RESTful APIs</span><span class="chip">JWT / OAuth2</span><span class="chip">Pydantic</span><span class="chip">OpenAPI / Swagger</span></div>
       </div>
-    </div>
-    <div class="skillrow">
-      <span class="label">code/</span>
-      <div class="chips">
-        <span class="chip">Python</span>
-        <span class="chip">Bash</span>
-        <span class="chip">C</span>
-        <span class="chip">Java</span>
-        <span class="chip">PyTorch</span>
-        <span class="chip">Streamlit</span>
+      <div class="card">
+        <h3><span class="sq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span>Databases</h3>
+        <div class="chips"><span class="chip">PostgreSQL</span><span class="chip">SQLite</span></div>
       </div>
-    </div>
-    <div class="skillrow">
-      <span class="label">cloud/</span>
-      <div class="chips">
-        <span class="chip">AWS (S3, IAM, EC2)</span>
-        <span class="chip">Google Cloud</span>
-        <span class="chip">Zero Trust</span>
-        <span class="chip">Cloud Misconfiguration Audits</span>
+      <div class="card">
+        <h3><span class="sq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 1 0-1.4-8.8A6 6 0 0 0 4.3 12 3.5 3.5 0 0 0 6.5 19h11z"/></svg></span>Cloud &amp; DevOps</h3>
+        <div class="chips"><span class="chip">AWS (S3, IAM, CloudTrail)</span><span class="chip">boto3</span><span class="chip">Terraform</span><span class="chip">Docker</span><span class="chip">Git &amp; GitHub</span><span class="chip">Linux</span></div>
+      </div>
+      <div class="card">
+        <h3><span class="sq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg></span>ML &amp; Data</h3>
+        <div class="chips"><span class="chip">PyTorch</span><span class="chip">Streamlit</span></div>
+      </div>
+      <div class="card">
+        <h3><span class="sq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>Security</h3>
+        <div class="chips"><span class="chip">API auth design</span><span class="chip">IAM least privilege</span><span class="chip">Digital forensics</span><span class="chip">CTFs</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<section id="experience">
+<section id="achievements">
   <div class="wrap reveal">
-    <div class="sec-head">
-      <span class="p1">┌──(<span class="u">hitesh㉿sec-ops</span>)-[<span class="path">~/experience</span>]</span>
-      <span class="p2">└─$ <span class="cmd">cat internship.log</span></span>
-      <h2>experience</h2>
+    <p class="eyebrow">Achievements</p>
+    <h2>Highlights &amp; certifications</h2>
+    <div class="ach" style="margin-top:28px">
+      <div class="card"><div class="num">AIR 37</div><h3>REDFOX CTF</h3><p>All India Rank 37 among 400+ teams. Also competed in CyberStorm 2025, Mumbai.</p></div>
+      <div class="card"><div class="num" id="ach-lc">190+</div><h3>LeetCode problems</h3><p>Arrays, hashing, two pointers, trees, graphs (DFS/BFS), backtracking and DP. 50 Days Badge 2026.</p></div>
+      <div class="card"><div class="num">50+</div><h3>Peers trained</h3><p>Coordinated ByteBreak CTF and ran College Cyber Security Club workshops.</p></div>
     </div>
-    <div class="card">
-      <h3>Digital Forensics Intern — CFT (Crypto Forensic and Technology)</h3>
-      <div class="meta">NAGPUR, INDIA &nbsp;·&nbsp; UNDER SHRI SHRIKANT ARDHAPURKAR</div>
+    <div class="card certs">
+      <p class="mini-h">Certifications</p>
       <ul>
-        <li>Performed digital forensics and data recovery on compromised and physically damaged storage media.</li>
-        <li>Applied forensic tooling and investigative methodology to identify, preserve and recover critical evidence.</li>
-        <li>Ran hands-on investigations into storage device evidence, chain of custody and recovery workflows.</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>HackerRank Python (Basic)</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>Google Cloud Computing Foundations</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>Zscaler Zero Trust Associate (ZTCA)</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>Certified Cyber Forensic Examiner (CCFE)</li>
       </ul>
-      <div class="tags">
-        <span class="tag">Autopsy</span><span class="tag">ewfacquire</span><span class="tag">Disk Imaging</span><span class="tag">Evidence Handling</span>
-      </div>
     </div>
   </div>
 </section>
-
-<section id="projects">
-  <div class="wrap reveal">
-    <div class="sec-head">
-      <span class="p1">┌──(<span class="u">hitesh㉿sec-ops</span>)-[<span class="path">~/projects</span>]</span>
-      <span class="p2">└─$ <span class="cmd">git log --oneline</span></span>
-      <h2>projects</h2>
-    </div>
-    <div class="grid two">
-
-      <div class="card">
-        <h3>Phishing Link Analyzer</h3>
-        <div class="meta">DEEP LEARNING · LIVE TRAFFIC MONITORING</div>
-        <ul>
-          <li>Built a PyTorch 1D-CNN engine that classifies phishing URLs and explains why each verdict was reached, wrapped in an interactive Streamlit dashboard.</li>
-          <li>Hooked into live network monitoring via Wireshark to intercept traffic, score domain risk in real time and fire automated alerts.</li>
-        </ul>
-        <div class="tags">
-          <span class="tag">Python</span><span class="tag">PyTorch</span><span class="tag">Streamlit</span><span class="tag">Wireshark</span>
-        </div><br>
-        <a class="repo" href="https://github.com/itachi2112-Tsukuyomi?tab=repositories" target="_blank" rel="noopener">→ view source</a>
-      </div>
-
-      <div class="card">
-        <h3>S3 Bucket Security Scanner</h3>
-        <div class="meta">CLOUD SECURITY · AWS</div>
-        <ul>
-          <li>Wrote a Python scanner that detects publicly accessible and misconfigured Amazon S3 buckets across an account.</li>
-          <li>Implemented checks for anonymous access and permission drift to quantify cloud data exposure risk.</li>
-        </ul>
-        <div class="tags">
-          <span class="tag">Python</span><span class="tag">boto3</span><span class="tag">AWS S3</span><span class="tag">IAM</span>
-        </div><br>
-        <a class="repo" href="https://github.com/itachi2112-Tsukuyomi?tab=repositories" target="_blank" rel="noopener">→ view source</a>
-      </div>
-
-      <div class="card">
-        <h3>Cybersecurity Workshops &amp; Challenge Design</h3>
-        <div class="meta">COMMUNITY · RCOEM</div>
-        <ul>
-          <li>Designed beginner-friendly security challenges and walkthroughs, then ran the workshops around them.</li>
-          <li>Taught sessions on digital forensics, cryptography, OSINT and reverse engineering.</li>
-          <li>Coordinated <strong>ByteBreak CTF</strong> to get more students into hands-on security.</li>
-        </ul>
-        <div class="tags">
-          <span class="tag">Challenge Authoring</span><span class="tag">Teaching</span><span class="tag">Event Ops</span>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>Home Lab</h3>
-        <div class="meta">SELF-DIRECTED · ONGOING</div>
-        <ul>
-          <li>Kali Linux and Metasploitable 2 running under VirtualBox for controlled exploitation and detection practice.</li>
-          <li>Worked through OverTheWire Bandit levels 0–25 covering SSH mechanics, Linux enumeration and text-processing pipelines.</li>
-          <li>Currently building toward the OSCP with a structured 16-week roadmap.</li>
-        </ul>
-        <div class="tags">
-          <span class="tag">Kali</span><span class="tag">Metasploitable 2</span><span class="tag">VirtualBox</span><span class="tag">OverTheWire</span>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<section id="ctf">
-  <div class="wrap reveal">
-    <div class="sec-head">
-      <span class="p1">┌──(<span class="u">hitesh㉿sec-ops</span>)-[<span class="path">~/ctf</span>]</span>
-      <span class="p2">└─$ <span class="cmd">cat scoreboard.txt</span></span>
-      <h2>competitions</h2>
-    </div>
-
-    <div class="ctf-item">
-      <div class="rank">AIR 37</div>
-      <div class="body">
-        <h4>REDFOX CTF</h4>
-        <p>All India Rank 37 across the full challenge set.</p>
-      </div>
-    </div>
-    <div class="ctf-item">
-      <div class="rank plain">PARTICIPANT</div>
-      <div class="body">
-        <h4>CyberStorm 2025</h4>
-        <p>Mumbai's largest CTF event — solved under live, high-pressure conditions.</p>
-      </div>
-    </div>
-    <div class="ctf-item">
-      <div class="rank plain">CATEGORIES</div>
-      <div class="body">
-        <h4>Where I usually score</h4>
-        <p>Password cracking, network traffic analysis, file forensics and basic exploitation.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="certs">
-  <div class="wrap reveal">
-    <div class="sec-head">
-      <span class="p1">┌──(<span class="u">hitesh㉿sec-ops</span>)-[<span class="path">~/certs</span>]</span>
-      <span class="p2">└─$ <span class="cmd">gpg --verify *.sig</span></span>
-      <h2>certifications</h2>
-    </div>
-    <div class="certs">
-      <div class="cert"><span class="sig">[ VALID ]</span><span class="name">Certified Cyber Forensic Examiner (CCFE)</span><span class="issuer">Forensics</span></div>
-      <div class="cert"><span class="sig">[ VALID ]</span><span class="name">Zscaler Zero Trust Associate (ZTCA)</span><span class="issuer">Zscaler</span></div>
-      <div class="cert"><span class="sig">[ VALID ]</span><span class="name">Google Cloud Computing Foundations</span><span class="issuer">Google Cloud</span></div>
-      <div class="cert"><span class="sig" style="color:var(--amber)">[ IN PROG ]</span><span class="name">AWS Certified Cloud Practitioner (CLF-C02)</span><span class="issuer">Amazon Web Services</span></div>
-    </div>
-  </div>
-</section>
+</main>
 
 <footer id="contact">
   <div class="wrap reveal">
-    <div class="contact-line">┌──(<span class="c-ok">hitesh㉿sec-ops</span>)-[~]<br>└─$ echo "open to SOC analyst &amp; security internship roles"</div>
-    <div class="contact-grid">
-      <a href="mailto:chandakhitesh77@gmail.com"><span class="k">Email</span><span class="v">chandakhitesh77@gmail.com</span></a>
-      <a href="tel:+919503201370"><span class="k">Phone</span><span class="v">+91 95032 01370</span></a>
-      <a href="https://github.com/itachi2112-Tsukuyomi" target="_blank" rel="noopener"><span class="k">GitHub</span><span class="v">itachi2112-Tsukuyomi</span></a>
-      <a href="https://www.linkedin.com/in/hitesh-chandak" target="_blank" rel="noopener"><span class="k">LinkedIn</span><span class="v">hitesh-chandak</span></a>
-      <a href="https://codolio.com/profile/itachi2112" target="_blank" rel="noopener"><span class="k">Codolio</span><span class="v">itachi2112</span></a>
-      <a href="Resume_Hitesh_Chandak.pdf" target="_blank" rel="noopener"><span class="k">Resume</span><span class="v">download PDF</span></a>
+    <div class="contact">
+      <div>
+        <h2>Let's build something</h2>
+        <p>I'm looking for SDE and backend developer roles. Email is the fastest way to reach me.</p>
+      </div>
+      <div class="links">
+        <a href="mailto:chandakhitesh77@gmail.com"><span class="k">Email</span><span class="v">chandakhitesh77@gmail.com</span></a>
+        <a href="tel:+919503201370"><span class="k">Phone</span><span class="v">+91 95032 01370</span></a>
+        <a href="https://www.linkedin.com/in/hitesh-chandak-750a18258" target="_blank" rel="noopener"><span class="k">LinkedIn</span><span class="v">hitesh-chandak</span></a>
+        <a href="https://codolio.com/profile/itachi2112" target="_blank" rel="noopener"><span class="k">Codolio</span><span class="v">itachi2112</span></a>
+      </div>
     </div>
-    <p class="colophon">
-      Nagpur, Maharashtra, India<br>
-      Built by hand. No trackers, no analytics, no cookies.<br>
-      <span style="color:var(--ok)">connection closed.</span>
-    </p>
+    <div class="colophon">
+      <span>© 2026 Hitesh Chandak · Nagpur, India</span>
+      <span><a href="security.html">Security portfolio</a> · <a href="Hitesh_Chandak_SWD.pdf" target="_blank" rel="noopener">Resume (PDF)</a></span>
+    </div>
   </div>
 </footer>
 
 <script>
 (function(){
-  var term = document.getElementById('term');
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  'use strict';
 
-  var lines = [
-    {h:'<span class="c-prompt">┌──(</span><span class="c-user">hitesh㉿sec-ops</span><span class="c-prompt">)-[</span><span class="c-prompt">~</span><span class="c-prompt">]</span>'},
-    {h:'<span class="c-prompt">└─$</span> nmap -sV -p- hitesh.chandak'},
-    {h:''},
-    {h:'<span class="c-dim">Starting Nmap 7.94 ( https://nmap.org )</span>'},
-    {h:'<span class="c-dim">Nmap scan report for hitesh.chandak (127.0.0.1)</span>'},
-    {h:'<span class="c-dim">Host is up (0.00021s latency).</span>'},
-    {h:''},
-    {h:'<span class="c-dim">PORT      STATE  SERVICE      VERSION</span>'},
-    {h:'  22/tcp  <span class="c-ok">open</span>   ssh          <span class="svc">whoami — RCOEM, cyber security, SGPA 8.5</span>', href:'#whoami'},
-    {h:'  80/tcp  <span class="c-ok">open</span>   http         <span class="svc">skills — forensics, packets, cloud</span>', href:'#skills'},
-    {h:' 443/tcp  <span class="c-ok">open</span>   https        <span class="svc">experience — CFT digital forensics</span>', href:'#experience'},
-    {h:'8080/tcp  <span class="c-ok">open</span>   http-proxy   <span class="svc">projects — 4 builds, code on GitHub</span>', href:'#projects'},
-    {h:'1337/tcp  <span class="c-ok">open</span>   ctf          <span class="svc">competitions — REDFOX AIR 37</span>', href:'#ctf'},
-    {h:'9001/tcp  <span class="c-ok">open</span>   pki          <span class="svc">certifications — CCFE, ZTCA, GCP</span>', href:'#certs'},
-    {h:'  25/tcp  <span class="c-amber">open</span>   smtp         <span class="svc">contact — hiring? start here</span>', href:'#contact'},
-    {h:''},
-    {h:'<span class="c-dim">Nmap done: 1 host up, 7 services identified in 1.42s</span>'},
-    {h:'<span class="c-prompt">└─$</span> <span class="caret">_</span>'}
+  // ------------------------------------------------------------------
+  // Platforms. Handles live in data/profiles.json (shared with the
+  // GitHub Action); these defaults are used only if that file is missing.
+  // ------------------------------------------------------------------
+  var PROFILES = { leetcode:'itachi_uchiha_2112', gfg:'chandakhq33g', hackerrank:'chandakhitesh77' };
+  var META = {
+    leetcode:   { name:'LeetCode',      url:function(u){return 'https://leetcode.com/u/'+u+'/';} },
+    gfg:        { name:'GeeksforGeeks', url:function(u){return 'https://www.geeksforgeeks.org/profile/'+u;} },
+    hackerrank: { name:'HackerRank',    url:function(u){return 'https://www.hackerrank.com/profile/'+u;} }
+  };
+  var ORDER = ['leetcode','gfg','hackerrank'];
+  var COLORS = { school:'var(--d-school)', basic:'var(--d-basic)', easy:'var(--d-easy)', medium:'var(--d-medium)', hard:'var(--d-hard)' };
+  var LS_KEY = 'sde-stats-v1';
+
+  // state[key] = { data, status:'live'|'cached'|'none', at:ISO }
+  var state = {};
+
+  // ---------- helpers ----------
+  function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+  function num(v){ return v===null||v===undefined||v===''||isNaN(Number(v)) ? null : Number(v); }
+  function fmt(n){ return n===null||n===undefined ? '—' : Number(n).toLocaleString('en-IN'); }
+  function when(iso){
+    if(!iso) return 'never';
+    var d = new Date(iso), s = (Date.now()-d.getTime())/1000;
+    if(s < 60) return 'just now';
+    if(s < 3600) return Math.floor(s/60)+' min ago';
+    if(s < 86400) return Math.floor(s/3600)+' h ago';
+    return d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+  }
+  function lsGet(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)||'null'); }catch(e){ return null; } }
+  function lsSet(v){ try{ localStorage.setItem(LS_KEY, JSON.stringify(v)); }catch(e){} }
+
+  function getJSON(url, opts, ms){
+    var ctl = ('AbortController' in window) ? new AbortController() : null;
+    var t = ctl ? setTimeout(function(){ ctl.abort(); }, ms||12000) : null;
+    var o = Object.assign({ cache:'no-store' }, opts||{});
+    if(ctl) o.signal = ctl.signal;
+    return fetch(url, o).then(function(r){
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      return r.json();
+    }).finally(function(){ if(t) clearTimeout(t); });
+  }
+
+  // Resolves with the first promise that succeeds; rejects only if all fail.
+  function any(ps){
+    return new Promise(function(res, rej){
+      var n = ps.length, f = 0, last;
+      if(!n) return rej(new Error('no sources'));
+      ps.forEach(function(p){ p.then(res, function(e){ last = e; if(++f === n) rej(last); }); });
+    });
+  }
+
+  // Some platforms don't send CORS headers; race a few public CORS proxies.
+  var PROXIES = [
+    function(u){ return 'https://corsproxy.io/?url='+encodeURIComponent(u); },
+    function(u){ return 'https://api.allorigins.win/raw?url='+encodeURIComponent(u); },
+    function(u){ return 'https://api.codetabs.com/v1/proxy/?quest='+encodeURIComponent(u); }
   ];
-
-  function build(i){
-    var l = lines[i];
-    var el;
-    if(l.href){
-      el = document.createElement('a');
-      el.href = l.href;
-      el.className = 'line port-row';
-    } else {
-      el = document.createElement('span');
-      el.className = 'line';
+  // These wrap the upstream body as a JSON string in `contents`.
+  var WRAP_PROXIES = [
+    function(u){ return 'https://api.allorigins.win/get?url='+encodeURIComponent(u); },
+    function(u){ return 'https://whateverorigin.org/get?url='+encodeURIComponent(u); }
+  ];
+  var EXTRA_PROXIES = [
+    function(u){ return 'https://api.cors.lol/?url='+encodeURIComponent(u); },
+    function(u){ return 'https://thingproxy.freeboard.io/fetch/'+u; },
+    function(u){ return 'https://r.jina.ai/'+u; }
+  ];
+  function getText(url, ms){
+    var ctl = ('AbortController' in window) ? new AbortController() : null;
+    var t = ctl ? setTimeout(function(){ ctl.abort(); }, ms||15000) : null;
+    return fetch(url, ctl ? { cache:'no-store', signal:ctl.signal } : { cache:'no-store' }).then(function(r){
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      return r.text();
+    }).finally(function(){ if(t) clearTimeout(t); });
+  }
+  // Races the proxies and resolves with the upstream body as text.
+  function proxyText(url, wide){
+    var raw = wide ? PROXIES.concat(EXTRA_PROXIES) : PROXIES;
+    var ps = raw.map(function(p){ return getText(p(url), 20000); });
+    if(wide){
+      ps = ps.concat(WRAP_PROXIES.map(function(p){
+        return getJSON(p(url), null, 20000).then(function(w){
+          if(!w || typeof w.contents !== 'string') throw new Error('bad payload');
+          return w.contents;
+        });
+      }));
     }
-    el.innerHTML = l.h === '' ? '&nbsp;' : l.h;
-    term.appendChild(el);
-    return el;
+    return any(ps);
+  }
+  // Some relays prepend a text header, so fall back to the outermost {...} block.
+  function parseJSONish(t){
+    try{ return JSON.parse(t); }catch(e){
+      var a = t.indexOf('{'), b = t.lastIndexOf('}');
+      if(a < 0 || b <= a) throw new Error('bad payload');
+      return JSON.parse(t.slice(a, b+1));
+    }
+  }
+  function viaProxy(url, wide){
+    var raw = proxyText(url, wide);
+    return raw.then(parseJSONish);
+  }
+  // Only corsproxy.io forwards POST bodies.
+  function postViaProxy(url, body){
+    return getJSON(PROXIES[0](url), { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) }, 15000);
   }
 
-  if(reduce){
-    lines.forEach(function(_,i){ build(i).classList.add('show'); });
-  } else {
-    var i = 0;
-    (function step(){
-      if(i >= lines.length) return;
-      var el = build(i);
-      requestAnimationFrame(function(){ el.classList.add('show'); });
-      var gap = lines[i].h === '' ? 40 : (lines[i].href ? 95 : 130);
-      i++;
-      setTimeout(step, gap);
-    })();
+  function first(){ for(var i=0;i<arguments.length;i++){ var v = num(arguments[i]); if(v !== null) return v; } return null; }
+
+  // Normalises the many shapes LeetCode stat APIs return.
+  function lcNorm(j){
+    if(!j || typeof j !== 'object') throw new Error('bad payload');
+    if(j.data && 'matchedUser' in j.data){
+      var m = j.data.matchedUser; if(!m) throw new Error('user not found');
+      var by = {}; (m.submitStatsGlobal || m.submitStats).acSubmissionNum.forEach(function(x){ by[x.difficulty] = x.count; });
+      var c = j.data.userContestRanking;
+      return { solved:by.All, easy:by.Easy, medium:by.Medium, hard:by.Hard, ranking:num(m.profile && m.profile.ranking),
+               contestRating:c ? Math.round(c.rating) : null, contests:c ? c.attendedContestsCount : null, topPercentage:c ? num(c.topPercentage) : null };
+    }
+    var solved = first(j.totalSolved, j.solvedProblem, j.total_solved);
+    if(solved === null) throw new Error(j.errors || j.error || j.message ? 'user not found / rate limited' : 'bad payload');
+    return { solved:solved, easy:first(j.easySolved), medium:first(j.mediumSolved), hard:first(j.hardSolved), ranking:first(j.ranking) };
   }
+  var LC_QUERY = 'query($u:String!){ matchedUser(username:$u){ profile{ ranking } submitStatsGlobal{ acSubmissionNum{ difficulty count } } } userContestRanking(username:$u){ rating attendedContestsCount topPercentage } }';
+
+  // Depth-first search for the first numeric value whose key matches one of the patterns (in priority order).
+  function deepNum(o, pats){
+    for(var p=0;p<pats.length;p++){
+      var stack=[o], seen=0;
+      while(stack.length && seen++ < 5000){
+        var cur = stack.pop();
+        if(!cur || typeof cur !== 'object') continue;
+        for(var k in cur){
+          var v = cur[k];
+          if(v && typeof v === 'object') stack.push(v);
+          else if(pats[p].test(k) && num(v) !== null) return num(v);
+        }
+      }
+    }
+    return null;
+  }
+  // Difficulty counts may be numbers, {count:n}, arrays or objects keyed by problem.
+  function deepCount(o, name){
+    var re = new RegExp('^'+name+'$','i'), stack=[o], seen=0;
+    while(stack.length && seen++ < 5000){
+      var cur = stack.pop();
+      if(!cur || typeof cur !== 'object') continue;
+      for(var k in cur){
+        var v = cur[k];
+        if(re.test(k)){
+          if(num(v) !== null) return num(v);
+          if(Array.isArray(v)) return v.length;
+          if(v && typeof v === 'object') return num(v.count) !== null ? num(v.count) : num(v.total) !== null ? num(v.total) : Object.keys(v).length;
+        }
+        if(v && typeof v === 'object') stack.push(v);
+      }
+    }
+    return null;
+  }
+
+  // Normalises the many shapes GeeksforGeeks stat APIs return.
+  function gfgNorm(j){
+    if(!j || typeof j !== 'object') throw new Error('bad payload');
+    var d = { school:deepCount(j,'school'), basic:deepCount(j,'basic'), easy:deepCount(j,'easy'), medium:deepCount(j,'medium'), hard:deepCount(j,'hard') };
+    var solved = deepNum(j, [/^total_?problems_?solved$/i, /^total_?solved$/i, /^problems_?solved$/i, /^(?!.*(streak|pod|potd)).*solved/i]);
+    if(solved === null){
+      var sum = ['school','basic','easy','medium','hard'].reduce(function(s,k){ return s + (d[k]||0); }, 0);
+      if(sum > 0) solved = sum;
+    }
+    if(solved === null) throw new Error('unrecognised response');
+    d.solved = solved;
+    d.codingScore = deepNum(j, [/^coding_?score$/i, /^score$/i]);
+    d.instituteRank = deepNum(j, [/^institute_?rank$/i]);
+    d.streak = deepNum(j, [/^max_?streak$/i, /longest_?streak/i, /^current_?streak$/i, /streak/i]);
+    return d;
+  }
+  // Last resort: read the numbers straight out of the public profile page's embedded data.
+  function gfgFromHtml(html){
+    function grab(key){ var m = html.match(new RegExp(key+'\\\\?"?\\s*:\\s*"?(\\d+)')); return m ? Number(m[1]) : null; }
+    var solved = grab('total_problems_solved');
+    if(solved === null) throw new Error('stats not found in page');
+    return { solved:solved, instituteRank:grab('institute_rank'), streak:grab('pod_solved_longest_streak') };
+  }
+
+  // ---------- sources (all raced in parallel; first valid payload wins) ----------
+  var SOURCES = {
+    leetcode: [
+      { host:'leetcode.com/graphql (via proxy)', get:function(u){
+        return postViaProxy('https://leetcode.com/graphql', { query:LC_QUERY, variables:{ u:u } }).then(lcNorm);
+      }},
+      { host:'alfa-leetcode-api.onrender.com', get:function(u){
+        return getJSON('https://alfa-leetcode-api.onrender.com/userProfile/'+encodeURIComponent(u), null, 25000).then(lcNorm);
+      }},
+      { host:'leetcode-api-faisalshohag.vercel.app', get:function(u){
+        return getJSON('https://leetcode-api-faisalshohag.vercel.app/'+encodeURIComponent(u), null, 25000).then(lcNorm);
+      }},
+      { host:'leetcode-stats.tashif.codes', get:function(u){
+        return getJSON('https://leetcode-stats.tashif.codes/'+encodeURIComponent(u), null, 20000).then(lcNorm);
+      }}
+    ],
+    gfg: [
+      { host:'authapi.geeksforgeeks.org (via proxy)', get:function(u){
+        return viaProxy('https://authapi.geeksforgeeks.org/api-get/user-profile-info/?handle='+encodeURIComponent(u)+'&article_count=false&redirect=true', true).then(gfgNorm);
+      }},
+      { host:'geeksforgeeks.org profile page (via proxy)', get:function(u){
+        return proxyText('https://www.geeksforgeeks.org/profile/'+encodeURIComponent(u), true).then(gfgFromHtml);
+      }},
+      { host:'gfg-stats.tashif.codes', get:function(u){
+        return getJSON('https://gfg-stats.tashif.codes/'+encodeURIComponent(u), null, 20000).then(gfgNorm);
+      }},
+      { host:'geeks-for-geeks-api.vercel.app', get:function(u){
+        return getJSON('https://geeks-for-geeks-api.vercel.app/'+encodeURIComponent(u), null, 20000).then(gfgNorm);
+      }}
+    ],
+    hackerrank: [
+      { host:'hackerrank.com/rest (via proxy)', get:function(u){
+        return viaProxy('https://www.hackerrank.com/rest/hackers/'+encodeURIComponent(u)+'/badges', true).then(function(j){
+          if(!j || !Array.isArray(j.models)) throw new Error('bad payload');
+          var b = j.models.filter(function(x){ return x.stars>0 || x.solved>0; })
+            .map(function(x){ return { name:x.badge_name, stars:x.stars||0, solved:x.solved||0 }; })
+            .sort(function(a,c){ return c.stars-a.stars || c.solved-a.solved; });
+          return { solved:b.reduce(function(s,x){return s+x.solved;},0),
+                   badgeCount:b.filter(function(x){return x.stars>0;}).length,
+                   stars:b.reduce(function(s,x){return s+x.stars;},0), badges:b };
+        });
+      }}
+    ]
+  };
+
+  // GFG difficulty split lives on a separate endpoint; best-effort after the totals arrive.
+  function gfgDifficulty(u){
+    return postViaProxy('https://practiceapi.geeksforgeeks.org/api/v1/user/problems/submissions/', { handle:u, requestType:'', year:'', month:'' })
+      .then(function(p){
+        var r = (p && p.result) || {}, cnt = function(k){ return r[k] ? Object.keys(r[k]).length : 0; };
+        var d = { school:cnt('School'), basic:cnt('Basic'), easy:cnt('Easy'), medium:cnt('Medium'), hard:cnt('Hard') };
+        if(!(d.school+d.basic+d.easy+d.medium+d.hard)) throw new Error('empty');
+        return d;
+      });
+  }
+
+  // ---------- rendering ----------
+  var cardsEl = document.getElementById('cards');
+  var logEl = document.getElementById('synclog');
+  var metaEl = document.getElementById('sync-meta');
+
+  function statusBadge(st){
+    if(!st || st.status==='none') return '<span class="badge none">No data</span>';
+    if(st.status==='live') return '<span class="badge live">● Live</span>';
+    if(st.status==='synced' && isFresh(st.at)) return '<span class="badge synced" title="Checked automatically by GitHub Actions">✓ Synced · '+esc(when(st.at))+'</span>';
+    return '<span class="badge cached" title="Last saved numbers">Saved · '+esc(when(st.at))+'</span>';
+  }
+
+  function diffBar(d, keys){
+    var parts = keys.filter(function(k){ return num(d[k]) > 0; });
+    if(!parts.length) return '';
+    var bar = parts.map(function(k){ return '<i style="flex-grow:'+d[k]+';background:'+COLORS[k]+'" title="'+k+': '+d[k]+'"></i>'; }).join('');
+    var leg = parts.map(function(k){ return '<span><i style="background:'+COLORS[k]+'"></i>'+k+' <b>'+fmt(d[k])+'</b></span>'; }).join('');
+    return '<div class="bar" role="img" aria-label="Solved by difficulty">'+bar+'</div><div class="legend">'+leg+'</div>';
+  }
+
+  function kv(rows){
+    rows = rows.filter(function(r){ return r[1]!==null && r[1]!==undefined; });
+    if(!rows.length) return '';
+    return '<div class="kv">'+rows.map(function(r){ return '<div><span class="k">'+esc(r[0])+'</span><span class="v">'+esc(r[1])+'</span></div>'; }).join('')+'</div>';
+  }
+
+  function stars(n){ var s=''; for(var i=0;i<5;i++) s += i<n ? '★' : '<span class="off">★</span>'; return s; }
+
+  function renderCard(key){
+    var m = META[key], u = PROFILES[key], st = state[key], d = st && st.data;
+    var h = '<div class="card pcard">'
+      + '<div class="top"><h3>'+m.name+'</h3>'+statusBadge(st)+'</div>'
+      + '<a class="handle" href="'+esc(m.url(u))+'" target="_blank" rel="noopener">@'+esc(u)+' ↗</a>';
+    if(!d){
+      h += '<div class="solved"><span class="n">—</span></div><p class="empty">'+(synced ? 'Couldn\u2019t reach '+m.name+' right now — try refreshing again in a bit.' : 'No stats yet — hit <b>Refresh stats</b>.')+'</p>';
+      return h+'</div>';
+    }
+    h += '<div class="solved"><span class="n">'+fmt(d.solved)+'</span><span class="u">'+(key==='hackerrank'?'challenges':'solved')+'</span></div>';
+    if(key==='leetcode'){
+      h += diffBar(d,['easy','medium','hard']);
+      h += kv([['Global rank', d.ranking!=null?'#'+fmt(d.ranking):null],
+               ['Contest rating', d.contestRating!=null?fmt(d.contestRating):null],
+               ['Contests', d.contests!=null?fmt(d.contests):null],
+               ['Top', d.topPercentage!=null?d.topPercentage+'%':null]]);
+    } else if(key==='gfg'){
+      h += diffBar(d,['school','basic','easy','medium','hard']);
+      h += kv([['Coding score', d.codingScore!=null?fmt(d.codingScore):null],
+               ['Institute rank', d.instituteRank!=null?'#'+fmt(d.instituteRank):null],
+               ['Longest streak', d.streak!=null?fmt(d.streak)+' days':null]]);
+    } else {
+      var b = (d.badges||[]).slice(0,5);
+      h += kv([['Badges', d.badgeCount!=null?fmt(d.badgeCount):null], ['Total stars', d.stars!=null?fmt(d.stars):null]]);
+      if(b.length){
+        h += '<div class="hr-badges">'+b.map(function(x){ return '<div><span>'+esc(x.name)+'</span><span class="stars" aria-label="'+x.stars+' of 5 stars">'+stars(x.stars)+'</span></div>'; }).join('')+'</div>';
+      }
+    }
+    return h+'</div>';
+  }
+
+  function renderAll(){
+    cardsEl.innerHTML = ORDER.map(renderCard).join('');
+    var total = 0, any = false, split = [];
+    ORDER.forEach(function(k){
+      var d = state[k] && state[k].data;
+      if(d && num(d.solved)!==null){ total += d.solved; any = true; split.push('<span>'+META[k].name+' <b>'+fmt(d.solved)+'</b></span>'); }
+    });
+    document.getElementById('total-n').textContent = any ? fmt(total) : '—';
+    document.getElementById('total-split').innerHTML = split.join('');
+    document.getElementById('fact-total').textContent = any ? fmt(total) : '—';
+    var lc = state.leetcode && state.leetcode.data;
+    if(lc && num(lc.solved)) document.getElementById('ach-lc').textContent = fmt(lc.solved);
+    renderGlance(total, any);
+  }
+
+  function log(tag, cls, msg){
+    var line = document.createElement('div');
+    var ic = { 'c-ok':'✓', 'c-amber':'–', 'c-alert':'✕', 'c-prompt':'•' }[cls] || '•';
+    line.innerHTML = '<span class="ic '+cls+'" title="'+esc(tag.trim())+'">'+ic+'</span><span>'+esc(msg)+'</span>';
+    logEl.appendChild(line);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  // ---------- server sync: GitHub Action runs hourly and commits data/stats.json ----------
+  // Read it straight from the repo (CORS-enabled, no Pages rebuild delay), falling back to the deployed copy.
+  var REPO = 'itachi2112-Tsukuyomi/itachi2112-Tsukuyomi.github.io';
+  var FRESH_MS = 24 * 3600 * 1000;
+  function isFresh(iso){ return iso && (Date.now() - new Date(iso).getTime()) < FRESH_MS; }
+  function loadSnapshot(){
+    return getJSON('https://raw.githubusercontent.com/'+REPO+'/main/data/stats.json?t='+Date.now(), null, 8000)
+      .catch(function(){ return getJSON('data/stats.json', null, 6000); })
+      .catch(function(){ return null; });
+  }
+  // When the Action last succeeded; numbers only get committed when they change, so this is the "checked at" time.
+  function lastServerCheck(){
+    return getJSON('https://api.github.com/repos/'+REPO+'/actions/workflows/update-stats.yml/runs?per_page=1&status=success', null, 6000)
+      .then(function(j){ var r = j && j.workflow_runs && j.workflow_runs[0]; return r ? (r.run_started_at || r.updated_at) : null; })
+      .catch(function(){ return null; });
+  }
+  function applyCache(snap, checkedAt){
+    var local = lsGet() || {};
+    ORDER.forEach(function(k){
+      var a = snap && snap.platforms && snap.platforms[k];
+      var b = local[k];
+      // ignore cached data for a different handle
+      if(a && a.handle && a.handle !== PROFILES[k]) a = null;
+      if(b && b.handle !== PROFILES[k]) b = null;
+      var aAt = a ? (checkedAt && new Date(checkedAt) > new Date(a.fetchedAt) ? checkedAt : a.fetchedAt) : null;
+      if(a && (!b || new Date(aAt) >= new Date(b.at))) state[k] = { data:a, status:'synced', at:aAt };
+      else if(b) state[k] = { data:b.data, status:'cached', at:b.at };
+      else state[k] = { data:null, status:'none' };
+    });
+  }
+  function refreshFromServer(){
+    return Promise.all([loadSnapshot(), lastServerCheck()]).then(function(r){ applyCache(r[0], r[1]); renderAll(); });
+  }
+
+  // ---------- update (live) ----------
+  var btn = document.getElementById('sync-btn');
+  var busy = false, synced = false;
+
+  // Returns true (live), 'synced' (recent server check) or false (only older saved numbers).
+  function syncOne(key){
+    var list = SOURCES[key], u = PROFILES[key], t0 = performance.now(), misses = [];
+    if(!u) return Promise.resolve(false);
+    var tries = list.map(function(s){
+      return s.get(u).then(function(d){
+        if(d.solved === null || d.solved === undefined) throw new Error('empty payload');
+        return { d:d, s:s };
+      }).catch(function(e){
+        misses.push(s.host+': '+(e.name==='AbortError'?'timeout':e.message));
+        throw e;
+      });
+    });
+    return any(tries).then(function(r){
+      var d = r.d, prev = state[key].data;
+      // keep extra fields (e.g. contest rating from the Action) the live source doesn't return
+      if(prev && prev.handle === u) Object.keys(prev).forEach(function(f){ if((d[f]===undefined || d[f]===null) && f!=='source' && f!=='fetchedAt') d[f]=prev[f]; });
+      d.handle = u;
+      function save(){
+        var at = new Date().toISOString();
+        state[key] = { data:d, status:'live', at:at };
+        var local = lsGet() || {}; local[key] = { handle:u, data:d, at:at }; lsSet(local);
+        renderAll();
+      }
+      save();
+      log('OK','c-ok', META[key].name+' — live ('+Math.round(performance.now()-t0)+' ms via '+r.s.host+')');
+      if(key === 'gfg' && d.easy == null){
+        return gfgDifficulty(u).then(function(x){ Object.assign(d, x); save(); }, function(){}).then(function(){ return true; });
+      }
+      return true;
+    }, function(){
+      var st = state[key];
+      if(st.status === 'synced' && isFresh(st.at)){
+        log('OK','c-ok', META[key].name+' — up to date (checked by the server '+when(st.at)+')');
+        return 'synced';
+      }
+      log('FAIL','c-alert', META[key].name+' — couldn’t refresh'+(st.data?'; showing numbers from '+when(st.at):''));
+      misses.forEach(function(m){ log('MISS','c-amber', '   '+m); });
+      return false;
+    });
+  }
+
+  function update(){
+    if(busy) return;
+    busy = true;
+    btn.disabled = true; btn.classList.add('busy'); btn.querySelector('.txt').textContent = 'Refreshing…';
+    metaEl.textContent = 'Fetching live stats…';
+    logEl.innerHTML = '';
+    log('INFO','c-prompt','Checking your profiles · '+new Date().toLocaleTimeString('en-IN'));
+    refreshFromServer().then(function(){
+      return Promise.all(ORDER.map(syncOne));
+    }).then(function(res){
+      var live = res.filter(function(r){ return r === true; }).length;
+      var fromServer = res.filter(function(r){ return r === 'synced'; }).length;
+      synced = true; renderAll();
+      log('DONE','c-prompt', (live+fromServer === ORDER.length ? 'All '+ORDER.length+' platforms up to date' : (live+fromServer)+' of '+ORDER.length+' platforms up to date')
+        + ' ('+live+' live, '+fromServer+' from the server check)');
+      var t = esc(new Date().toLocaleTimeString('en-IN'));
+      metaEl.innerHTML = live === ORDER.length ? 'All platforms <b>live</b> · '+t
+        : live + fromServer === ORDER.length ? 'All platforms <b>up to date</b> · '+t
+        : live + fromServer ? '<b>'+(live+fromServer)+'/'+ORDER.length+'</b> up to date · the rest show saved numbers'
+        : 'Couldn\u2019t refresh right now · showing saved numbers';
+    }).finally(function(){
+      busy = false;
+      btn.disabled = false; btn.classList.remove('busy'); btn.querySelector('.txt').textContent = 'Refresh stats';
+    });
+  }
+  btn.addEventListener('click', update);
+
+  // ---------- hero "at a glance" card ----------
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function renderGlance(total, any){
+    document.getElementById('glance-total').textContent = any ? fmt(total) : '—';
+    var max = 0;
+    ORDER.forEach(function(k){ var d = state[k] && state[k].data; if(d && d.solved > max) max = d.solved; });
+    document.getElementById('glance-rows').innerHTML = ORDER.map(function(k){
+      var d = state[k] && state[k].data, n = d ? num(d.solved) : null;
+      var w = n && max ? Math.max(4, Math.round(n / max * 100)) : 0;
+      return '<div class="g-row"><span class="name">'+META[k].name+'</span><span class="n">'+fmt(n)+'</span>'
+        + '<span class="track"><i style="width:'+w+'%"></i></span></div>';
+    }).join('');
+  }
+
+  // ---------- theme toggle ----------
+  document.getElementById('theme-btn').addEventListener('click', function(){
+    var root = document.documentElement, cur = root.getAttribute('data-theme');
+    if(!cur) cur = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    var next = cur === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try{ localStorage.setItem('sde-theme', next); }catch(e){}
+  });
+
+  // ---------- boot ----------
+  ORDER.forEach(function(k){ state[k] = { data:null, status:'none' }; });
+  renderAll();
+  getJSON('data/profiles.json', null, 6000).then(function(p){ ORDER.forEach(function(k){ if(p && p[k]) PROFILES[k] = p[k]; }); }).catch(function(){})
+    .then(refreshFromServer)
+    .then(function(){
+      var have = ORDER.filter(function(k){ return state[k].data; }).length;
+      if(have === 0){ update(); }  // nothing saved yet: fetch live straight away
+      else metaEl.innerHTML = 'Synced automatically · refresh for live numbers';
+    });
 
   // scroll reveals
   if(!reduce && 'IntersectionObserver' in window){
     var io = new IntersectionObserver(function(entries){
-      entries.forEach(function(e){
-        if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
-      });
+      entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
     }, {threshold:0.08, rootMargin:'0px 0px -40px 0px'});
     document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
   } else {
