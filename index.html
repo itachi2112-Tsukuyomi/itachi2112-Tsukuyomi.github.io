@@ -368,7 +368,7 @@
       <p class="role">Backend Developer · Python, FastAPI, AWS</p>
       <p class="lede">Final-year computer engineering student building backend services with <b>Python and FastAPI</b> — REST APIs, <b>JWT / OAuth2 authentication</b> and <b>AWS automation</b> with boto3 and Terraform — with a security-first approach to API and cloud design.</p>
       <div class="cta">
-        <a class="btn primary" href="Hitesh_Chandak_SWD.pdf" target="_blank" rel="noopener">
+        <a class="btn primary" href="Hitesh_Chandak_SWD.pdf?v=2" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0 5-5m-5 5-5-5M5 21h14"/></svg>Download resume</a>
         <a class="btn ghost" href="https://github.com/itachi2112-Tsukuyomi" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.7 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5z"/></svg>GitHub</a>
@@ -568,7 +568,7 @@
     <h2>Highlights &amp; certifications</h2>
     <div class="ach" style="margin-top:28px">
       <div class="card"><div class="num">AIR 37</div><h3>REDFOX CTF</h3><p>All India Rank 37 among 400+ teams. Also competed in CyberStorm 2025, Mumbai.</p></div>
-      <div class="card"><div class="num" id="ach-lc">190+</div><h3>LeetCode problems</h3><p>Arrays, hashing, two pointers, trees, graphs (DFS/BFS), backtracking and DP. 50 Days Badge 2026.</p></div>
+      <div class="card"><div class="num" id="ach-total">275+</div><h3>Problems solved</h3><p>On LeetCode, HackerRank and GeeksforGeeks — arrays, hashing, two pointers, trees, graphs (DFS/BFS), backtracking and DP. 50 Days Badge 2026.</p></div>
       <div class="card"><div class="num">50+</div><h3>Peers trained</h3><p>Coordinated ByteBreak CTF and ran College Cyber Security Club workshops.</p></div>
     </div>
     <div class="card certs">
@@ -600,7 +600,7 @@
     </div>
     <div class="colophon">
       <span>© 2026 Hitesh Chandak · Nagpur, India</span>
-      <span><a href="security.html">Security portfolio</a> · <a href="Hitesh_Chandak_SWD.pdf" target="_blank" rel="noopener">Resume (PDF)</a></span>
+      <span><a href="security.html">Security portfolio</a> · <a href="Hitesh_Chandak_SWD.pdf?v=2" target="_blank" rel="noopener">Resume (PDF)</a></span>
     </div>
   </div>
 </footer>
@@ -918,8 +918,7 @@
     document.getElementById('total-n').textContent = any ? fmt(total) : '—';
     document.getElementById('total-split').innerHTML = split.join('');
     document.getElementById('fact-total').textContent = any ? fmt(total) : '—';
-    var lc = state.leetcode && state.leetcode.data;
-    if(lc && num(lc.solved)) document.getElementById('ach-lc').textContent = fmt(lc.solved);
+    if(any) document.getElementById('ach-total').textContent = fmt(total);
     renderGlance(total, any);
   }
 
